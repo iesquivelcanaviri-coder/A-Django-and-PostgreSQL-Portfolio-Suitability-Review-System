@@ -1,0 +1,76 @@
+# ============================
+# Python Dependencies for My Django Project
+# ============================
+# This file lists all the Python packages that my application needs./ #lists the Python packages your project needs.
+# Render will automatically install everything here during deployment.
+
+# DJANGO WEB FRAMEWORK
+# Django is the main backend framework used to build the project.
+# It provides:
+# - URL routing
+# - views
+# - HTML template rendering
+# - forms and validation
+# - database models and migrations
+# - authentication and authorization
+# - security features such as CSRF protection
+# The version range means:
+# - install Django version 5.2 or newer
+# - do not install Django 6.1 or newer
+# This helps prevent an unsupported future version from being
+# installed automatically.
+Django>=5.2,<6.1
+
+# DATABASE URL CONFIGURATION
+# dj-database-url converts a database connection string stored
+# in the DATABASE_URL environment variable into the dictionary
+# format expected by Django.
+# For example, Render or Neon may provide: postgresql://USER:PASSWORD@HOST:PORT/DATABASE
+# This package allows settings.py to read that connection string
+# without hardcoding database credentials into the project.
+dj-database-url>=2.2.0
+
+# POSTGRESQL DATABASE DRIVER
+# psycopg2-binary is the database driver that allows Python and
+# Django to communicate with a PostgreSQL database.
+# Django creates ORM queries in Python, translates them into SQL,
+# and sends those SQL commands to PostgreSQL through this driver.
+# Without a PostgreSQL driver, Django could not connect to the
+# PostgreSQL database used by the deployed application.
+psycopg2-binary>=2.9.9
+
+# PRODUCTION WEB SERVER
+# Gunicorn is a production WebServerGetewayInterface WSGI web server.
+# Django's built-in command: python manage.py runserver
+# is intended for local development only. It should not be used
+# as the public production server.
+# Render uses Gunicorn to run the deployed Django application,
+# normally with a command such as:
+# gunicorn config.wsgi:application
+gunicorn>=22.0.0
+
+# STATIC FILE MANAGEMENT
+# WhiteNoise allows the deployed Django application to serve
+# static files efficiently.
+# Static files include:
+# - CSS
+# - JavaScript
+# - logos
+# - icons
+# - other design assets
+# During deployment, Django collects these files into the staticfiles directory using:
+# python manage.py collectstatic
+# WhiteNoise then serves the collected files in production.
+whitenoise>=6.7.0
+
+# ENVIRONMENT VARIABLE MANAGEMENT
+# python-dotenv loads environment variables from a local .env file.
+# Environment variables are used to keep sensitive configuration
+# outside the source code, including:
+# - Django SECRET_KEY
+# - PostgreSQL DATABASE_URL
+# - email credentials
+# - DEBUG configuration
+# The real .env file must not be uploaded to GitHub because it may
+# contain private credentials. A safe .env.example file can be included to show which variables are required.
+python-dotenv>=1.0.1

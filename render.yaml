@@ -1,0 +1,60 @@
+# ============================================================
+# RENDER BLUEPRINT CONFIGURATION
+# ============================================================
+# This file defines the cloud resources required to deploy
+# SuitabilityDesk on Render.
+# Render reads this file from the root of the GitHub repository.
+# It can then create and configure:
+# 1. The Django web service.
+# 2. The PostgreSQL database.
+# 3. The environment variables used by Django.
+# 4. The commands required to build and start the application.
+# This approach is known as Infrastructure as Code because the
+# deployment configuration is stored and version-controlled
+# alongside the application source code.
+# YAML files depend on indentation. Spaces must be used carefully,
+# because indentation shows which settings belong together.
+
+# ============================================================
+# WEB SERVICES
+# The services section defines applications that Render should run.
+# In this project, it defines one web service for the Django app.
+# ============================================================
+services:                                # Defines the services Render should create and run; top-level section for apps.
+  - type: web                            # Service type is web; handles HTTP requests for the application.
+    name: suitabilitydesk                # Service name shown in Render dashboard; identifies this app.
+    env: python                          # Use a Python runtime; Render will install the specified Python version.
+
+    buildCommand: bash build.sh          # Build step run on deploy; installs deps, collects static files, runs migrations.
+    startCommand: gunicorn config.wsgi:application   # Start command for production; runs Gunicorn and loads Django WSGI app.
+
+    envVars:                             # Environment variables passed into the runtime; read by Django settings.
+      - key: SECRET_KEY                  # Django SECRET_KEY; used for cryptographic signing, sessions, tokens.
+        generateValue: true              # Let Render generate a secure random value; do not commit secrets to GitHub.
+
+      - key: DEBUG                       # Django DEBUG flag; controls debug pages and error detail exposure.
+        value: "False"                   # Must be False in production to avoid leaking sensitive info.
+
+      - key: ALLOWED_HOSTS               # Hostnames Django will accept requests from; prevents Host header attacks.
+        value: ".onrender.com"           # Allow Render-hosted domains; settings.py should split this into a list.
+
+      - key: CSRF_TRUSTED_ORIGINS        # Trusted origins for CSRF-protected POST requests; used by Django's CSRF middleware.
+        value: "https://suitabilitydesk.onrender.com"   # Replace with final service URL if different.
+
+      - key: DATABASE_URL                # Database connection string injected by Render; used by dj-database-url.
+        fromDatabase:
+          name: suitabilitydesk-db       # Name of the database resource defined below; links DB to this env var.
+          property: connectionString     # Use the connectionString property so Render provides full PostgreSQL URL.
+
+# ============================================================
+# POSTGRESQL DATABASE
+# This section tells Render to provision a managed PostgreSQL
+# database for the project.
+# The Django application will connect to this database through the
+# DATABASE_URL environment variable defined above.
+# ============================================================
+databases:                               # Databases section tells Render to provision managed DB instances.
+
+  - name: suitabilitydesk-db             # Resource name in Render; must match fromDatabase name above.
+    databaseName: suitabilitydesk        # Internal PostgreSQL database name where Django stores tables.
+    user: suitabilitydesk                # Database username created for this DB; Render manages the password securely.

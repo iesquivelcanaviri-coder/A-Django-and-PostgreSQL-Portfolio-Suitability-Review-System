@@ -1,0 +1,13 @@
+# ============================
+# Python Runtime Version
+# ============================
+# This file tells Render which exact Python version to install and use
+# when running my Django application.
+# It ensures the deployment environment matches my local development setup,
+# preventing version conflicts or unexpected behaviour.
+
+# I selected Python 3.12.8 because it is a stable, modern version
+# fully supported by Django 5 and my project dependencies.
+# Render will automatically install this version before starting the app.
+python-3.12.8
+
