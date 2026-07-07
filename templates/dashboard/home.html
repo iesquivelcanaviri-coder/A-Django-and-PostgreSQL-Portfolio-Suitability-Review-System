@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard | SuitabilityDesk{% endblock %}
+{% block content %}
+<h1 class="mb-4">Dashboard</h1>
+<div class="row g-3 mb-4">
+    <div class="col-md-3"><div class="stat-card"><span>Clients</span><strong>{{ client_count }}</strong></div></div>
+    <div class="col-md-3"><div class="stat-card"><span>Mandates</span><strong>{{ mandate_count }}</strong></div></div>
+    <div class="col-md-3"><div class="stat-card"><span>Open Projects</span><strong>{{ project_count }}</strong></div></div>
+    <div class="col-md-3"><div class="stat-card"><span>Unread Messages</span><strong>{{ unread_count }}</strong></div></div>
+</div>
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="card"><div class="card-body"><h2>Recent Review Projects</h2>
+            <div class="table-responsive"><table class="table"><thead><tr><th>Project</th><th>Client</th><th>Status</th></tr></thead><tbody>{% for p in projects %}<tr><td>{{ p.project_name }}</td><td>{{ p.client }}</td><td><span class="badge text-bg-primary">{{ p.get_status_display }}</span></td></tr>{% empty %}<tr><td colspan="3">No projects yet.</td></tr>{% endfor %}</tbody></table></div>
+        </div></div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card"><div class="card-body"><h2>Latest Suitability Assessments</h2>
+            <div class="table-responsive"><table class="table"><thead><tr><th>Client</th><th>Score</th><th>Outcome</th></tr></thead><tbody>{% for r in risk_assessments %}<tr><td>{{ r.client }}</td><td>{{ r.assessment_score }}</td><td>{{ r.get_outcome_display }}</td></tr>{% empty %}<tr><td colspan="3">No assessments yet.</td></tr>{% endfor %}</tbody></table></div>
+        </div></div>
+    </div>
+</div>
+{% endblock %}

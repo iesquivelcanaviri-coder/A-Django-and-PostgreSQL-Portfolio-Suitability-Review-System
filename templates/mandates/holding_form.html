@@ -1,0 +1,2 @@
+{% extends 'base.html' %}
+{% block content %}<div class="card"><div class="card-body"><h1>Add Categorised Holding</h1><form method="post" id="holding-form">{% csrf_token %}{{ form.as_p }}<div id="allocation-warning" class="alert alert-warning d-none">Allocation should normally remain between 0% and 100%.</div><button class="btn btn-primary">Save Holding</button></form></div></div>{% endblock %}

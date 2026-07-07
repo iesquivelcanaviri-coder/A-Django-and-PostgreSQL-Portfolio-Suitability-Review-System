@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} | SuitabilityDesk{% endblock %}
+{% block content %}
+<div class="card"><div class="card-body"><h1>{{ title }}</h1><form method="post" class="needs-validation" novalidate>{% csrf_token %}{{ form.as_p }}<button class="btn btn-primary" type="submit">Save</button><a class="btn btn-outline-secondary" href="{% url 'clients:list' %}">Cancel</a></form></div></div>
+{% endblock %}

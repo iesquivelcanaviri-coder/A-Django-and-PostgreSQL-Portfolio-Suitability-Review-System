@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Register | SuitabilityDesk{% endblock %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-lg-7"><div class="card"><div class="card-body">
+<h1>Create Account</h1>
+<p class="text-muted">Register to access the portfolio suitability review system.</p>
+<form method="post">{% csrf_token %}{{ form.as_p }}<button class="btn btn-primary" type="submit">Register</button></form>
+</div></div></div></div>
+{% endblock %}

@@ -1,0 +1,2 @@
+{% extends 'base.html' %}
+{% block content %}<div class="card"><div class="card-body"><h1>{{ message_obj.subject }}</h1><p><strong>From:</strong> {{ message_obj.sender }} | <strong>To:</strong> {{ message_obj.recipient }}</p><p class="text-muted">{{ message_obj.sent_at }}</p><hr><p>{{ message_obj.body|linebreaks }}</p>{% if message_obj.related_project %}<p><strong>Related project:</strong> {{ message_obj.related_project }}</p>{% endif %}<a class="btn btn-outline-secondary" href="{% url 'messaging:archive' message_obj.pk %}">Archive</a></div></div>{% endblock %}

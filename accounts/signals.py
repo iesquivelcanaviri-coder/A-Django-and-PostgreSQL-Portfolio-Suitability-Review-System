@@ -1,0 +1,12 @@
+"""Signals that automatically create a UserProfile for every new user."""
+from django.conf import settings
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from .models import UserProfile
+
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_user_profile(sender, instance, created, **kwargs):
+    """Create a role/contact profile whenever a new Django user is registered."""
+    if created:
+        UserProfile.objects.create(user=instance)

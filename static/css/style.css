@@ -1,0 +1,87 @@
+/* ============================================================
+   SuitabilityDesk custom CSS
+   Bootstrap handles the main responsive grid; this file adds the
+   finance-style theme and a few dashboard-specific enhancements.
+   ============================================================ */
+:root {
+    --navy: #13264b;
+    --ink: #162033;
+    --accent: #00d4ff;
+    --soft: #f4f7fb;
+}
+
+body {
+    background: var(--soft);
+    color: var(--ink);
+}
+
+.bg-navy {
+    background: var(--navy);
+}
+
+.hero {
+    background: linear-gradient(135deg, #13264b, #36519a);
+}
+
+.card {
+    border: 1px solid #dbe3ef;
+    border-radius: 1rem;
+}
+
+.stat-card {
+    background: #ffffff;
+    border: 1px solid #dbe3ef;
+    border-radius: 1rem;
+    padding: 1.25rem;
+    min-height: 7rem;
+    box-shadow: 0 0.25rem 1rem rgba(19, 38, 75, 0.06);
+}
+
+.stat-card span {
+    display: block;
+    color: #61708a;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-card strong {
+    font-size: 2rem;
+    color: var(--navy);
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+form p label {
+    font-weight: 700;
+}
+
+form input,
+form select,
+form textarea {
+    display: block;
+    width: 100%;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.5rem;
+}
+
+.helptext {
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.errorlist {
+    color: #b91c1c;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .hero {
+        padding: 2rem !important;
+    }
+    .display-5 {
+        font-size: 2rem;
+    }
+}

@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}{{ client.full_name }} | SuitabilityDesk{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3"><h1>{{ client.full_name }}</h1><div><a class="btn btn-outline-primary" href="{% url 'clients:update' client.pk %}">Edit Client</a><a class="btn btn-primary" href="{% url 'clients:financial' client.pk %}">Financial Profile</a></div></div>
+<div class="row g-4">
+<div class="col-lg-6"><div class="card"><div class="card-body"><h2>Client Details</h2><p><strong>Email:</strong> {{ client.email }}</p><p><strong>Phone:</strong> {{ client.phone|default:'Not recorded' }}</p><p><strong>Type:</strong> {{ client.get_client_type_display }}</p><p><strong>Tax Residency:</strong> {{ client.tax_residency|default:'Not recorded' }}</p></div></div></div>
+<div class="col-lg-6"><div class="card"><div class="card-body"><h2>Financial Context</h2>{% if client.financial_profile %}<p><strong>Net Worth:</strong> {{ client.financial_profile.net_worth }}</p><p><strong>Existing Investments:</strong> {{ client.financial_profile.existing_investments }}</p><p><strong>Liquidity Need:</strong> {{ client.financial_profile.get_liquidity_need_display }}</p><p><strong>Time Horizon:</strong> {{ client.financial_profile.time_horizon_years }} years</p>{% else %}<p>No financial profile recorded.</p>{% endif %}</div></div></div>
+</div>
+<div class="card mt-4"><div class="card-body"><h2>Risk Assessments</h2><a class="btn btn-sm btn-primary mb-3" href="{% url 'clients:risk_create' %}">New Risk Assessment</a><div class="table-responsive"><table class="table"><thead><tr><th>Date</th><th>Tolerance</th><th>Capacity</th><th>Score</th><th>Outcome</th></tr></thead><tbody>{% for assessment in client.risk_assessments.all %}<tr><td>{{ assessment.created_at|date:'Y-m-d' }}</td><td>{{ assessment.get_risk_tolerance_display }}</td><td>{{ assessment.get_risk_capacity_display }}</td><td>{{ assessment.assessment_score }}</td><td>{{ assessment.get_outcome_display }}</td></tr>{% empty %}<tr><td colspan="5">No risk assessments yet.</td></tr>{% endfor %}</tbody></table></div></div></div>
+{% endblock %}

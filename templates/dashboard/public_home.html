@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}SuitabilityDesk | Home{% endblock %}
+{% block content %}
+<section class="hero p-5 rounded-4 text-white mb-4">
+    <h1 class="display-5 fw-bold">Portfolio Suitability and Mandate Review System</h1>
+    <p class="lead">A Django + PostgreSQL web application for managing client suitability, investment mandates, review projects, holdings and internal messages.</p>
+    <a class="btn btn-info btn-lg me-2" href="{% url 'accounts:register' %}">Create Account</a>
+    <a class="btn btn-outline-light btn-lg" href="{% url 'login' %}">Login</a>
+</section>
+<div class="row g-4">
+    <div class="col-md-4"><div class="card h-100"><div class="card-body"><h3>Suitability First</h3><p>Record client risk tolerance, risk capacity, liquidity needs and review outcomes before portfolio decisions.</p></div></div></div>
+    <div class="col-md-4"><div class="card h-100"><div class="card-body"><h3>Mandate Governance</h3><p>Create and approve investment mandates with restrictions, benchmarks, ESG preferences and audit logs.</p></div></div></div>
+    <div class="col-md-4"><div class="card h-100"><div class="card-body"><h3>Database Workflow</h3><p>Store clients, projects, stakeholders, categorized holdings and inbox messages in PostgreSQL.</p></div></div></div>
+</div>
+{% endblock %}

@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block title %}{{ box_title }} | SuitabilityDesk{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3"><h1>{{ box_title }}</h1><div><a class="btn btn-primary" href="{% url 'messaging:compose' %}">Compose</a><a class="btn btn-outline-secondary" href="{% url 'messaging:archived' %}">Archived</a></div></div>
+<div class="card"><div class="card-body"><div class="table-responsive"><table class="table table-hover"><thead><tr><th>Subject</th><th>From</th><th>To</th><th>Date</th><th>Status</th></tr></thead><tbody>{% for msg in messages_list %}<tr><td><a href="{% url 'messaging:detail' msg.pk %}">{{ msg.subject }}</a></td><td>{{ msg.sender }}</td><td>{{ msg.recipient }}</td><td>{{ msg.sent_at|date:'Y-m-d H:i' }}</td><td>{% if msg.is_read %}Read{% else %}<span class="badge text-bg-info">Unread</span>{% endif %}</td></tr>{% empty %}<tr><td colspan="5">No messages.</td></tr>{% endfor %}</tbody></table></div></div></div>
+{% endblock %}
