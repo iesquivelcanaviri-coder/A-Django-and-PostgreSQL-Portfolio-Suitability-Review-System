@@ -42,13 +42,7 @@ This makes the project suitable for the Frameworks assignment while also support
 ## Render Deployment URL
 
 ```text
-Add Render URL here after deployment
-```
-
-Example format:
-
-```text
-https://your-render-service-name.onrender.com
+https://a-django-and-postgresql-portfolio.onrender.com
 ```
 
 ---
@@ -629,10 +623,423 @@ Open the admin panel:
 ```text
 http://127.0.0.1:8000/admin/
 ```
+---
+## 13.14 Correct Development and Deployment Order
+
+The project should be built and deployed in this order:
+
+```text
+1. Build the Django project in VS Code
+2. Create apps, models, views, templates, static files and forms
+3. Test the project locally
+4. Add .env to .gitignore
+5. Push the safe project files to GitHub
+6. Create the Neon PostgreSQL database
+7. Copy the Neon DATABASE_URL
+8. Add DATABASE_URL to the local .env file
+9. Run migrations locally using Neon
+10. Test the local website and admin panel again
+11. Create the Render web service
+12. Connect Render to GitHub
+13. Add Render environment variables
+14. Set Render build and start commands
+15. Deploy the live website
+
+In simple terms:
+
+VS Code = build and test the code
+GitHub = store the safe project files
+Neon = store the PostgreSQL database
+Render = host the live Django website
+
+Correct workflow:
+
+Build locally → Push to GitHub → Create Neon → Test Neon locally → Deploy with Render
+
+Render is created last because it needs the GitHub code, the Neon database connection string and the Django environment variables.
 
 ---
 
-# 14. Testing
+## 14. Render Deployment Setup
+
+This section explains how to deploy the Django project to Render after the project code has been pushed to GitHub and the Neon PostgreSQL database has been created.
+
+Render is used to host the live Django web application. Neon is used to host the PostgreSQL database. GitHub stores the project code.
+
+```text
+GitHub = stores the Django code
+Neon = stores the PostgreSQL database
+Render = hosts the live web application
+```
+
+---
+
+## 14.1 Before Starting Render
+
+Before creating the Render web service, confirm that the project works locally.
+
+Run:
+
+```bash
+python manage.py check
+python manage.py makemigrations
+python manage.py migrate
+python manage.py runserver
+```
+
+Then check:
+
+```text
+http://127.0.0.1:8000/
+http://127.0.0.1:8000/admin/
+```
+
+If the local project works, push the latest safe version to GitHub:
+
+```bash
+git status
+git add .
+git commit -m "Prepare Django project for Render deployment"
+git push origin main
+```
+
+Important: `.env` must not be uploaded to GitHub.
+
+---
+
+## 14.2 Create a Render Web Service
+
+Go to:
+
+```text
+https://dashboard.render.com
+```
+
+Click:
+
+```text
+New + → Web Service
+```
+
+Connect the GitHub repository:
+
+```text
+A-Django-and-PostgreSQL-Portfolio-Suitability-Review-System
+```
+
+---
+
+## 14.3 Render General Settings
+
+Use the following settings:
+
+```text
+Name: A-Django-and-PostgreSQL-Portfolio-Suitability-Review-System
+Language: Python 3
+Branch: main
+Region: Frankfurt (EU Central)
+Instance Type: Free
+Root Directory: leave empty
+```
+
+The root directory should stay empty because `manage.py` is in the main repository folder.
+
+---
+
+## 14.4 Render Build Command
+
+In Render, set the Build Command to:
+
+```bash
+pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate
+```
+
+This command does three things:
+
+```text
+1. Installs the Python packages from requirements.txt
+2. Collects static files for production
+3. Applies Django migrations to the Neon PostgreSQL database
+```
+
+---
+
+## 14.5 Render Start Command
+
+Set the Start Command to:
+
+```bash
+gunicorn suitabilitydesk.wsgi:application
+```
+
+This tells Render to start the Django application using Gunicorn.
+
+The word before `.wsgi` must match the Django project folder that contains:
+
+```text
+settings.py
+urls.py
+wsgi.py
+asgi.py
+```
+
+In this project, that folder is:
+
+```text
+suitabilitydesk
+```
+
+---
+
+## 14.6 Render Health Check Path
+
+Set the Health Check Path to:
+
+```text
+/
+```
+
+This allows Render to check whether the homepage is responding correctly.
+
+---
+
+# 15. Render Environment Variables
+
+Render cannot access the local `.env` file from the developer's computer. Therefore, the production settings must be added manually in the Render Environment page.
+
+Go to:
+
+```text
+Render Dashboard → Web Service → Environment
+```
+
+Click:
+
+```text
+Add Environment Variable
+```
+
+Add the following variables one by one.
+
+---
+
+## 15.1 `SECRET_KEY`
+
+```text
+Key: SECRET_KEY
+Value: use a generated secret key from Render
+```
+
+This is Django's private security key. It must not be shared or committed to GitHub.
+
+---
+
+## 15.2 `DEBUG`
+
+```text
+Key: DEBUG
+Value: False
+```
+
+`DEBUG` must be `False` in production so that Django does not show private technical error details on the live website.
+
+---
+
+## 15.3 `DATABASE_URL`
+
+```text
+Key: DATABASE_URL
+Value: your Neon PostgreSQL connection string
+```
+
+The value should start with:
+
+```text
+postgresql://
+```
+
+Example format:
+
+```text
+postgresql://username:password@host/neondb?sslmode=require
+```
+
+This connects the live Render website to the Neon PostgreSQL database.
+
+Do not include `DATABASE_URL=` inside the value box. Render already stores the key separately.
+
+Correct:
+
+```text
+Key: DATABASE_URL
+Value: postgresql://username:password@host/neondb?sslmode=require
+```
+
+Incorrect:
+
+```text
+Key: DATABASE_URL
+Value: DATABASE_URL=postgresql://username:password@host/neondb?sslmode=require
+```
+
+---
+
+## 15.4 `ALLOWED_HOSTS`
+
+Use the Render domain without `https://`.
+
+For this project, the Render domain is:
+
+```text
+a-django-and-postgresql-portfolio.onrender.com
+```
+
+Add:
+
+```text
+Key: ALLOWED_HOSTS
+Value: a-django-and-postgresql-portfolio.onrender.com
+```
+
+---
+
+## 15.5 `CSRF_TRUSTED_ORIGINS`
+
+Use the Render domain with `https://`.
+
+```text
+Key: CSRF_TRUSTED_ORIGINS
+Value: https://a-django-and-postgresql-portfolio.onrender.com
+```
+
+This allows Django forms to work correctly on the deployed Render website.
+
+---
+
+## 15.6 `EMAIL_BACKEND`
+
+```text
+Key: EMAIL_BACKEND
+Value: django.core.mail.backends.console.EmailBackend
+```
+
+This means password reset emails are printed in the server logs instead of being sent through a real email service. This is suitable for development and academic demonstration.
+
+---
+
+## 15.7 `DEFAULT_FROM_EMAIL`
+
+```text
+Key: DEFAULT_FROM_EMAIL
+Value: noreply@suitabilitydesk.com
+```
+
+This is the default sender address used by Django's password reset system.
+
+---
+
+## 15.8 Final Render Environment Variable Checklist
+
+The final Render Environment page should contain:
+
+```text
+SECRET_KEY = generated secret key
+DEBUG = False
+DATABASE_URL = Neon PostgreSQL connection string
+ALLOWED_HOSTS = a-django-and-postgresql-portfolio.onrender.com
+CSRF_TRUSTED_ORIGINS = https://a-django-and-postgresql-portfolio.onrender.com
+EMAIL_BACKEND = django.core.mail.backends.console.EmailBackend
+DEFAULT_FROM_EMAIL = noreply@suitabilitydesk.com
+```
+
+---
+
+# 16. Deploy the Web Service
+
+After the settings and environment variables are added, click:
+
+```text
+Deploy Web Service
+```
+
+If the service already exists, use:
+
+```text
+Manual Deploy → Deploy latest commit
+```
+
+Render will then:
+
+```text
+1. Pull the latest code from GitHub
+2. Install requirements
+3. Collect static files
+4. Run migrations
+5. Start the Django application with Gunicorn
+```
+
+---
+
+# 17. Check the Live Website
+
+After deployment finishes, open the live Render URL:
+
+```text
+https://a-django-and-postgresql-portfolio.onrender.com
+```
+
+Check the following pages:
+
+```text
+/
+admin/
+accounts/login/
+accounts/register/
+dashboard/
+```
+
+The admin page should be:
+
+```text
+https://a-django-and-postgresql-portfolio.onrender.com/admin/
+```
+
+---
+
+# 18. Create a Superuser on Render
+
+If the local superuser does not exist on the live Neon database, create one from the Render Shell.
+
+Go to:
+
+```text
+Render Dashboard → Web Service → Shell
+```
+
+Run:
+
+```bash
+python manage.py createsuperuser
+```
+
+Enter:
+
+```text
+Username
+Email address
+Password
+Password again
+```
+
+Then log in at:
+
+```text
+https://a-django-and-postgresql-portfolio.onrender.com/admin/
+```
+
+---
+
+# 19. Testing
 
 Run:
 
@@ -659,61 +1066,79 @@ python manage.py check --deploy
 
 ---
 
-# 15. Render Deployment
+# 20. Common Render Errors and Fixes
 
-The project includes Render-ready files:
+## Error: `UnknownSchemeError: Scheme '://' is unknown`
+
+This means `DATABASE_URL` is incorrect.
+
+Fix:
 
 ```text
-Procfile
-runtime.txt
-requirements.txt
-build.sh
-render.yaml
+DATABASE_URL must start with postgresql://
+```
+
+Correct format:
+
+```text
+postgresql://username:password@host/neondb?sslmode=require
 ```
 
 ---
 
-## 15.1 Render Build Command
+## Error: `DisallowedHost`
 
-```bash
-./build.sh
+This means `ALLOWED_HOSTS` is incorrect.
+
+Fix:
+
+```text
+ALLOWED_HOSTS = a-django-and-postgresql-portfolio.onrender.com
 ```
 
-Alternative manual build command:
-
-```bash
-pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate
-```
+Do not include `https://`.
 
 ---
 
-## 15.2 Render Start Command
+## Error: CSRF verification failed
+
+This means `CSRF_TRUSTED_ORIGINS` is incorrect.
+
+Fix:
+
+```text
+CSRF_TRUSTED_ORIGINS = https://a-django-and-postgresql-portfolio.onrender.com
+```
+
+This one must include `https://`.
+
+---
+
+## Error: Static files not loading
+
+Check that the Build Command includes:
+
+```bash
+python manage.py collectstatic --noinput
+```
+
+Also check that `settings.py` includes the correct static files configuration.
+
+---
+
+## Error: Application failed to start
+
+Check the Start Command:
 
 ```bash
 gunicorn suitabilitydesk.wsgi:application
 ```
 
----
-
-## 15.3 Required Render Environment Variables
-
-In the Render dashboard, add:
-
-```text
-SECRET_KEY=<secure-generated-secret>
-DEBUG=False
-DATABASE_URL=<Neon PostgreSQL connection string>
-ALLOWED_HOSTS=<your-render-domain>.onrender.com
-CSRF_TRUSTED_ORIGINS=https://<your-render-domain>.onrender.com
-EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
-DEFAULT_FROM_EMAIL=noreply@example.com
-```
-
-The same Neon database connection string used locally can be added to Render as `DATABASE_URL`.
+The word before `.wsgi` must match the folder that contains `wsgi.py`.
 
 ---
 
-# 16. Security Notes
+# 21. Security Notes
 
 Security features included:
 
@@ -729,7 +1154,7 @@ Security features included:
 
 ---
 
-# 17. Files Not Uploaded to GitHub
+# 22. Files Not Uploaded to GitHub
 
 The following files and folders should not be committed:
 
@@ -747,7 +1172,7 @@ These are excluded through `.gitignore`.
 
 ---
 
-# 18. Useful Commands
+# 23. Useful Commands
 
 ## Activate Virtual Environment
 
@@ -799,7 +1224,7 @@ CONTROL + C
 
 ---
 
-# 19. Academic and Financial Disclaimer
+# 24. Academic and Financial Disclaimer
 
 This project is for educational purposes only. It demonstrates Django, PostgreSQL, authentication, authorization, Bootstrap, JavaScript, testing and deployment concepts through a realistic portfolio suitability workflow.
 
@@ -807,8 +1232,13 @@ It does not provide regulated investment advice, does not recommend financial pr
 
 ---
 
-# 20. Summary
+# 25. Summary
 
 SuitabilityDesk demonstrates the key Frameworks assignment requirements through a lawful and realistic finance-related web application. It combines Django, PostgreSQL, authentication, authorization, Bootstrap, JavaScript, CRUD operations, inbox functionality, categorised data, role-based approval and deployment readiness.
 
 The application supports a professional portfolio suitability workflow while remaining appropriate for an educational software-development assignment.
+
+```
+
+After you paste this into GitHub, your README will properly include the **Render deployment process**, the **environment variables**, and the **common Render errors/fixes**.
+```
