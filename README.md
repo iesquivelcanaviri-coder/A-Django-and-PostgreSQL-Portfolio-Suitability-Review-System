@@ -431,41 +431,69 @@ Make sure the terminal is inside the same folder as `manage.py`.
 
 ---
 
-## 13.3 Create a Virtual Environment
+        ## 13.3 Create a Virtual Environment
 
-```bash
-python3 -m venv .venv
-```
+        ```bash
+        python3 -m venv .venv
+        ```
 
----
+        ---
 
-## 13.4 Activate the Virtual Environment
+        ## 13.4 Activate the Virtual Environment
 
-```bash
-source .venv/bin/activate
-```
+        ```bash
+        source .venv/bin/activate
+        ```
 
-When activated, the terminal should show:
+        When activated, the terminal should show:
 
-```text
-(.venv)
-```
+        ```text
+        (.venv)
+        ```
 
-If Anaconda is also active, you may see:
+        If Anaconda is also active, you may see:
 
-```text
-(.venv) (base)
-```
+        ```text
+        (.venv) (base)
+        ```
 
-This is acceptable as long as `(.venv)` appears.
+        This is acceptable as long as `(.venv)` appears.
 
----
+        ---
 
-## 13.5 Install Requirements
+        ## 13.5 Install Requirements
 
-```bash
-pip install -r requirements.txt
-```
+        ```bash
+        pip install -r requirements.txt
+        ```
+
+        ## Create the .env file again
+        Inside .env, add:
+        SECRET_KEY=replace-this-with-a-long-random-secret-key
+        DEBUG=True
+        DATABASE_URL=postgresql://PASTE-YOUR-NEON-CONNECTION-STRING-HERE
+        ALLOWED_HOSTS=127.0.0.1,localhost
+        EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
+        DEFAULT_FROM_EMAIL=noreply@example.com
+
+        ## Run Django checks
+        Run: python manage.py check
+
+        ## Run migrations
+        Run: python manage.py makemigrations
+        then: python manage.py migrate
+
+                ## Create a superuser
+                Run: python manage.py createsuperuser
+                Django will ask for:
+                        Username
+                        Email address
+                        Password
+                        Password again
+                If it says the username already exists, that means your Neon database already has users. Use a different username or log in with the existing on
+
+        ##Run the server
+        Run: python manage.py runserver
 
 ---
 
