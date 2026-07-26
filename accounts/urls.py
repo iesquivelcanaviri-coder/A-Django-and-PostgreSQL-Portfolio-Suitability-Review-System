@@ -33,3 +33,4 @@ urlpatterns = [
 # These routes only become part of the full website if the main project urls.py includes the accounts app URLs.
 # For example, the main suitabilitydesk/urls.py might include this file using path("accounts/", include("accounts.urls")).
 # If that is the case, the full registration URL becomes /accounts/register/ and the full profile URL becomes /accounts/profile/.
+
