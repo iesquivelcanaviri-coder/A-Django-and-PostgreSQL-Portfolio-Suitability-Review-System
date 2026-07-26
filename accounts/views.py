@@ -124,3 +124,6 @@ def profile(request):
     # The context dictionary sends both forms into the template.
     # user_form is used for Django's built-in User fields.
     # profile_form is used for the extra custom profile fields.
+    
+    
+    
