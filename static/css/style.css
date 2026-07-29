@@ -1,87 +1,145 @@
-/* ============================================================
-   SuitabilityDesk custom CSS
-   Bootstrap handles the main responsive grid; this file adds the
-   finance-style theme and a few dashboard-specific enhancements.
-   ============================================================ */
+/* ============================================================ */
+   /* SuitabilityDesk custom CSS */
+   /* This is the main custom stylesheet for the project, where I add my own design rules on top of Bootstrap. */
+
+   /* Bootstrap handles the main responsive grid; this file adds the */
+   /* Bootstrap already gives me layout tools like rows, columns, containers and responsive behaviour. */
+
+   /* finance-style theme and a few dashboard-specific enhancements. */
+   /* This CSS file is mainly used to make the app look more like a professional finance/dashboard system. */
+/* ============================================================ */
+
 :root {
+    /* The :root selector stores global CSS variables that can be reused throughout the whole stylesheet. */
     --navy: #13264b;
+    /* This creates a custom variable for the main dark navy colour used in the navbar, headings and dashboard theme. */
     --ink: #162033;
+    /* This creates a custom variable for the main text colour, so the text looks softer than pure black. */
     --accent: #00d4ff;
+    /* This creates a custom variable for a bright accent colour that can be used for highlights or important UI details. */
     --soft: #f4f7fb;
+    /* This creates a custom variable for the light page background, giving the site a clean dashboard-style look. */
 }
 
 body {
+    /* The body selector styles the whole page because every visible page sits inside the HTML body element. */
     background: var(--soft);
+    /* This sets the full page background to the soft colour variable defined in :root. */
     color: var(--ink);
+    /* This sets the default text colour for the whole website using the ink variable. */
 }
 
 .bg-navy {
+    /* This custom class can be added to HTML elements when I want them to use the project’s navy theme colour. */
     background: var(--navy);
+    /* This gives the element a navy background, useful for the navbar, footer or header sections. */
 }
 
 .hero {
+    /* This class styles the main hero/banner section, usually used on the homepage or landing section. */
     background: linear-gradient(135deg, #13264b, #36519a);
+    /* This creates a diagonal gradient from dark navy to lighter blue, making the header look more polished and finance-themed. */
 }
 
 .card {
+    /* This styles Bootstrap card components, so all cards have a more consistent custom project appearance. */
     border: 1px solid #dbe3ef;
+    /* This adds a light border around cards, helping separate content blocks without making them too heavy. */
     border-radius: 1rem;
+    /* This rounds the corners of cards, making the UI look softer and more modern. */
 }
 
 .stat-card {
+    /* This class is used for dashboard statistic boxes such as Clients, Mandates, Open Projects and Unread Messages. */
     background: #ffffff;
+    /* This gives each statistic card a white background so it stands out clearly against the soft page background. */
     border: 1px solid #dbe3ef;
+    /* This adds a light border to keep the card visually separated from the rest of the page. */
     border-radius: 1rem;
+    /* This rounds the card corners to match the Bootstrap card style used across the project. */
     padding: 1.25rem;
+    /* This adds space inside the card so the text does not touch the edges and looks easier to read. */
     min-height: 7rem;
+    /* This gives every statistic card a minimum height, helping all dashboard cards look even and aligned. */
     box-shadow: 0 0.25rem 1rem rgba(19, 38, 75, 0.06);
+    /* This adds a soft shadow, giving the dashboard cards a slight raised effect without making them look too strong. */
 }
 
 .stat-card span {
+    /* This targets the smaller label text inside a statistic card, such as “Clients” or “Mandates”. */
     display: block;
+    /* This makes the span behave like a block element, so the label appears on its own line above the number. */
     color: #61708a;
+    /* This gives the label a muted grey-blue colour so it looks secondary compared with the main number. */
     font-size: 0.9rem;
+    /* This makes the label slightly smaller than normal text, showing it is supporting information. */
     margin-bottom: 0.5rem;
+    /* This adds space below the label so the number does not sit too close to it. */
 }
 
 .stat-card strong {
+    /* This targets the main statistic number inside the dashboard card. */
     font-size: 2rem;
+    /* This makes the number large so the key dashboard value is easy to see quickly. */
     color: var(--navy);
+    /* This applies the main navy theme colour to the number, keeping the design consistent with the project branding. */
 }
 
 .table-responsive {
+    /* This targets Bootstrap's responsive table wrapper. */
     overflow-x: auto;
+    /* This allows tables to scroll horizontally on smaller screens instead of breaking the page layout. */
 }
 
 form p label {
+    /* This targets form labels that are inside paragraph tags, which is common when Django renders forms automatically. */
     font-weight: 700;
+    /* This makes form labels bold so users can clearly see what each input field is asking for. */
 }
 
 form input,
 form select,
 form textarea {
+    /* This targets the main form fields: text inputs, dropdown lists and larger text areas. */
     display: block;
+    /* This makes each form field appear on its own line, which improves readability and form layout. */
     width: 100%;
+    /* This makes the form fields stretch across the available container width, which works well with Bootstrap layouts. */
     padding: 0.55rem 0.75rem;
+    /* This adds inside spacing so the text inside the input fields does not feel cramped. */
     border: 1px solid #cbd5e1;
+    /* This gives form fields a light grey border, making the input boxes visible but not too harsh. */
     border-radius: 0.5rem;
+    /* This rounds the corners of form inputs so they match the softer card design used in the project. */
 }
 
 .helptext {
+    /* This class is used for extra guidance text that Django forms may display under fields. */
     color: #6b7280;
+    /* This makes help text grey, showing it is useful guidance but not the main content. */
     font-size: 0.875rem;
+    /* This makes help text slightly smaller than normal text so it does not distract from the form label or input. */
 }
 
 .errorlist {
+    /* This class is used by Django when a form has validation errors. */
     color: #b91c1c;
+    /* This makes validation errors red, which helps users immediately notice something needs fixing. */
     font-weight: 600;
+    /* This makes the error text semi-bold so it stands out more clearly on the form. */
 }
 
 @media (max-width: 768px) {
+    /* This media query applies only on smaller screens, such as tablets and mobile phones. */
     .hero {
+        /* This targets the hero section only when the screen width is 768px or smaller. */
         padding: 2rem !important;
+        /* This reduces the hero spacing on smaller screens and uses !important to override stronger Bootstrap spacing classes if needed. */
     }
+
     .display-5 {
+        /* This targets Bootstrap's display-5 heading size on smaller screens. */
         font-size: 2rem;
+        /* This reduces the large heading size so the title fits better on mobile screens. */
     }
 }
