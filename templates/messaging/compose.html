@@ -1,2 +1,28 @@
 {% extends 'base.html' %}
-{% block content %}<div class="card"><div class="card-body"><h1>Compose Message</h1><form method="post">{% csrf_token %}{{ form.as_p }}<button class="btn btn-primary">Send</button></form></div></div>{% endblock %}
+{# This tells Django that this page is using base.html as the main layout, so the navbar, page structure, CSS links and shared design come from the base template. #}
+{% block content %}
+{# This opens the content block from base.html, meaning everything below will be inserted into the main page area. #}
+<div class="card">
+    {# This Bootstrap card creates a clean container around the compose message form. #}
+    <div class="card-body">
+        {# The card-body class adds spacing inside the card so the form is not pressed against the edges. #}
+        <h1>Compose Message</h1>
+        {# This heading tells the user that they are on the page for writing a new internal message. #}
+        <form method="post">
+            {# This form sends data back to the Django view using the POST method, which is used when creating or submitting data. #}
+            {% csrf_token %}
+            {# This Django security tag protects the form from Cross-Site Request Forgery attacks, which is required for safe POST forms. #}
+            {{ form.as_p }}
+            {# This displays the Django form fields automatically, with each field wrapped inside paragraph tags. #}
+            {# The form object comes from the Django view, so the template is connected to the backend form logic. #}
+            <button class="btn btn-primary">Send</button>
+            {# This Bootstrap button submits the form and sends the message data to the Django view. #}
+            {# The btn and btn-primary classes make the button look like a standard Bootstrap primary action button. #}
+        </form>
+        {# This closes the form after all fields and the submit button have been added. #}
+    </div>
+    {# This closes the Bootstrap card body. #}
+</div>
+{# This closes the full Bootstrap card container. #}
+{% endblock %}
+{# This closes the content block, so Django knows where the page-specific content ends. #}

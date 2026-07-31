@@ -1,6 +1,117 @@
 {% extends 'base.html' %}
+{# This tells Django that this page uses base.html as the main layout, so it inherits the navbar, CSS, scripts and general page structure. #}
 {% block title %}{{ box_title }} | SuitabilityDesk{% endblock %}
+{# This replaces the title block from base.html, so the browser tab shows the current inbox type, for example "Inbox | SuitabilityDesk". #}
+{# The variable box_title comes from the Django view, which means the same template can be reused for Inbox, Sent or Archived pages. #}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3"><h1>{{ box_title }}</h1><div><a class="btn btn-primary" href="{% url 'messaging:compose' %}">Compose</a><a class="btn btn-outline-secondary" href="{% url 'messaging:archived' %}">Archived</a></div></div>
-<div class="card"><div class="card-body"><div class="table-responsive"><table class="table table-hover"><thead><tr><th>Subject</th><th>From</th><th>To</th><th>Date</th><th>Status</th></tr></thead><tbody>{% for msg in messages_list %}<tr><td><a href="{% url 'messaging:detail' msg.pk %}">{{ msg.subject }}</a></td><td>{{ msg.sender }}</td><td>{{ msg.recipient }}</td><td>{{ msg.sent_at|date:'Y-m-d H:i' }}</td><td>{% if msg.is_read %}Read{% else %}<span class="badge text-bg-info">Unread</span>{% endif %}</td></tr>{% empty %}<tr><td colspan="5">No messages.</td></tr>{% endfor %}</tbody></table></div></div></div>
+{# This starts the main content section that will be inserted into the content block inside base.html. #}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    {# This Bootstrap flex container places the page heading on the left and the buttons on the right. #}
+    {# d-flex turns the div into a flexbox, justify-content-between pushes items apart, align-items-center vertically aligns them, and mb-3 adds bottom spacing. #}
+    <h1>{{ box_title }}</h1>
+    {# This displays the page title on the screen, such as Inbox, Sent Messages or Archived Messages. #}
+    {# The value is dynamic because box_title is passed from the Django view through the template context. #}
+    <div>
+        {# This inner div groups the action buttons together on the right side of the heading row. #}
+        <a class="btn btn-primary" href="{% url 'messaging:compose' %}">Compose</a>
+        {# This creates a Bootstrap primary button that links to the message compose page. #}
+        {# The {% url %} tag uses the named URL pattern messaging:compose instead of hardcoding a URL path, which is safer if routes change later. #}
+        {# messaging:compose means Django looks inside the messaging app namespace for a URL named compose. #}
+        <a class="btn btn-outline-secondary" href="{% url 'messaging:archived' %}">Archived</a>
+        {# This creates a secondary outline button that links to the archived messages page. #}
+        {# Again, the URL is generated using Django's URL reversing system, which connects the template to urls.py. #}
+    </div>
+    {# This closes the button group div. #}
+</div>
+{# This closes the top heading/action row. #}
+<div class="card">
+    {# This Bootstrap card creates a clean container around the messages table. #}
+    {# Cards help make the inbox look organised and consistent with the rest of the dashboard design. #}
+    <div class="card-body">
+        {# This adds Bootstrap card padding around the table content. #}
+        <div class="table-responsive">
+            {# This makes the table scroll horizontally on smaller screens, which helps with mobile responsiveness. #}
+            <table class="table table-hover">
+                {# This creates a Bootstrap table. #}
+                {# table gives standard Bootstrap styling, and table-hover highlights rows when the user moves the mouse over them. #}
+                <thead>
+                    {# The table header section contains the column names. #}
+                    <tr>
+                        {# This starts the header row. #}
+                        <th>Subject</th>
+                        {# This column shows the message subject and links to the full message detail page. #}
+                        <th>From</th>
+                        {# This column shows the sender of the message. #}
+                        <th>To</th>
+                        {# This column shows the recipient of the message. #}
+                        <th>Date</th>
+                        {# This column shows when the message was sent. #}
+                        <th>Status</th>
+                        {# This column shows whether the message has been read or is still unread. #}
+                    </tr>
+                    {# This closes the header row. #}
+                </thead>
+                {# This closes the table header. #}
+                <tbody>
+                    {# The table body contains the actual message records from the database. #}
+                    {% for msg in messages_list %}
+                    {# This loops through messages_list, which is passed from the Django view. #}
+                    {# Each loop item is called msg, representing one Message object from the database. #}
+                    <tr>
+                        {# This starts one table row for one message. #}
+                        <td>
+                            {# This cell contains the clickable message subject. #}
+                            <a href="{% url 'messaging:detail' msg.pk %}">{{ msg.subject }}</a>
+                            {# This link opens the detail page for this specific message. #}
+                            {# msg.pk is the primary key of the message, so Django knows exactly which message to open. #}
+                            {# This connects the template to the detail view and URL pattern in the messaging app. #}
+                        </td>
+                        {# This closes the subject cell. #}
+                        <td>{{ msg.sender }}</td>
+                        {# This displays the sender of the message. #}
+                        {# In the database, sender is usually a ForeignKey linked to Django's User model. #}
+                        <td>{{ msg.recipient }}</td>
+                        {# This displays the recipient of the message. #}
+                        {# This also normally comes from a ForeignKey relationship to the User model. #}
+                        <td>{{ msg.sent_at|date:'Y-m-d H:i' }}</td>
+                        {# This displays the sent_at date and time in a cleaner format. #}
+                        {# The date filter formats the datetime as year-month-day hour:minute, for example 2026-07-31 17:26. #}
+                        <td>
+                            {# This cell displays the read/unread status of the message. #}
+                            {% if msg.is_read %}
+                            {# This checks the Boolean field is_read on the Message model. #}
+                            {# If is_read is True, the template displays "Read". #}
+                                Read
+                                {# This plain text shows that the message has already been opened or marked as read. #}
+                            {% else %}
+                            {# If is_read is False, the message has not been read yet. #}
+                                <span class="badge text-bg-info">Unread</span>
+                                {# This Bootstrap badge makes unread messages stand out visually. #}
+                                {# text-bg-info gives the badge an information-style colour, which helps the user quickly notice unread messages. #}
+                            {% endif %}
+                            {# This ends the read/unread condition. #}
+                        </td>
+                        {# This closes the status cell. #}
+                    </tr>
+                    {# This closes the row for one message. #}
+                    {% empty %}
+                    {# This special Django template tag runs if messages_list is empty. #}
+                    {# It prevents the table from looking broken when there are no messages to show. #}
+                    <tr>
+                        {# This starts a fallback row for the empty inbox state. #}
+                        <td colspan="5">No messages.</td>
+                        {# colspan="5" makes this cell stretch across all five table columns. #}
+                        {# This gives the user a clear message instead of showing a blank table. #}
+                    </tr>
+                    {# This closes the empty-state row. #}
+                    {% endfor %}
+                    {# This ends the messages_list loop. #}
+                </tbody>
+                {# This closes the table body. #}
+            </table>
+            {# This closes the messages table. #}
+        </div>
+        {# This closes the responsive table wrapper. #}
+    </div>
+</div>
 {% endblock %}

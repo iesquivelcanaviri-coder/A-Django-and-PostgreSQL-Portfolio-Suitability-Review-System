@@ -1,2 +1,39 @@
 {% extends 'base.html' %}
-{% block content %}<div class="card"><div class="card-body"><h1>{{ message_obj.subject }}</h1><p><strong>From:</strong> {{ message_obj.sender }} | <strong>To:</strong> {{ message_obj.recipient }}</p><p class="text-muted">{{ message_obj.sent_at }}</p><hr><p>{{ message_obj.body|linebreaks }}</p>{% if message_obj.related_project %}<p><strong>Related project:</strong> {{ message_obj.related_project }}</p>{% endif %}<a class="btn btn-outline-secondary" href="{% url 'messaging:archive' message_obj.pk %}">Archive</a></div></div>{% endblock %}
+<!-- This connects this page to base.html, so it reuses the main layout, navbar, Bootstrap links, CSS, and general page structure instead of repeating them here. -->
+{% block content %}
+<!-- This opens the content block from base.html, meaning everything inside this section will appear in the main page area of the website. -->
+<div class="card">
+    <!-- Bootstrap card component used to place the message details inside a clean bordered box. This helps the page look consistent with the rest of the site. -->
+    <div class="card-body">
+        <!-- card-body adds spacing inside the Bootstrap card, so the text does not touch the edges. -->
+        <h1>{{ message_obj.subject }}</h1>
+        <!-- Displays the subject of the selected message. message_obj comes from the Django view and represents one message record from the database. -->
+        <p>
+            <!-- Paragraph used to show sender and recipient details on one readable line. -->
+            <strong>From:</strong> {{ message_obj.sender }}
+            <!-- Shows who sent the message. message_obj.sender is likely a ForeignKey connected to Django's User model. -->
+            |
+            <strong>To:</strong> {{ message_obj.recipient }}
+            <!-- Shows who received the message. This also helps prove that the inbox system stores sender and recipient relationships in the database. -->
+        </p>
+        <p class="text-muted">{{ message_obj.sent_at }}</p>
+        <!-- Shows the date and time when the message was sent. text-muted is a Bootstrap class that makes the timestamp look less visually dominant. -->
+        <hr>
+        <!-- Adds a horizontal line to separate the message header information from the message body. -->
+        <p>{{ message_obj.body|linebreaks }}</p>
+        <!-- Displays the main message body. The linebreaks filter keeps paragraph breaks from the database text so the message is easier to read. -->
+        {% if message_obj.related_project %}
+        <!-- Checks whether this message is linked to a portfolio review project before trying to display it. This prevents an empty project line from showing. -->
+            <p>
+                <!-- Paragraph used only when the message has a related project. -->
+                <strong>Related project:</strong> {{ message_obj.related_project }}
+                <!-- Displays the linked portfolio review project. This shows how messaging connects to the wider portfolio review workflow. -->
+            </p>
+        {% endif %}
+        <!-- Ends the if statement. Django templates need this because the template engine must know where the conditional section finishes. -->
+        <a class="btn btn-outline-secondary" href="{% url 'messaging:archive' message_obj.pk %}">Archive</a>
+        <!-- This creates an Archive button. The URL tag uses the messaging app namespace and sends the message primary key so Django knows which message to archive. -->
+    </div>
+    <!-- Ends the Bootstrap card-body section. -->
+</div>
+{% endblock %}

@@ -7,3 +7,39 @@
 <form method="post">{% csrf_token %}{{ form.as_p }}<button class="btn btn-primary" type="submit">Register</button></form>
 </div></div></div></div>
 {% endblock %}
+
+
+
+{% extends 'base.html' %}
+<!-- This line tells Django that this page is using base.html as the main layout, so I do not need to repeat the full HTML structure, navbar, CSS links or common page design here. -->
+{% block title %}Register | SuitabilityDesk{% endblock %}
+<!-- This fills the title block from base.html, so the browser tab will show "Register | SuitabilityDesk" when the user is on the registration page. -->
+{% block content %}
+<!-- This opens the main content block, which means everything below will be inserted into the content area defined inside base.html. -->
+<div class="row justify-content-center">
+<!-- This Bootstrap row creates a horizontal layout area, and justify-content-center places the registration card in the centre of the page. -->
+    <div class="col-lg-7">
+    <!-- This Bootstrap column controls the width of the form area, using 7 columns on large screens so the form is not too wide. -->
+        <div class="card">
+        <!-- This creates a Bootstrap card, which gives the registration form a clean box-style layout. -->
+            <div class="card-body">
+            <!-- This adds padding inside the card so the heading, text and form do not touch the card edges. -->
+                <h1>Create Account</h1>
+                <!-- This is the main heading of the page, making it clear that this page is for creating a new user account. -->
+                <p class="text-muted">Register to access the portfolio suitability review system.</p>
+                <!-- This short paragraph explains the purpose of registration, and text-muted makes it appear in a softer Bootstrap text colour. -->
+                <form method="post">
+                <!-- This starts the HTML form. The post method is used because the user is sending registration data to the Django backend. -->
+                    {% csrf_token %}
+                    <!-- This Django template tag adds CSRF protection, which helps stop unsafe or fake form submissions from other websites. -->
+                    {{ form.as_p }}
+                    <!-- This displays the Django registration form fields automatically, with each field wrapped in a paragraph tag. -->
+                    <button class="btn btn-primary" type="submit">Register</button>
+                    <!-- This Bootstrap button submits the form so Django can validate the data and create the user account if everything is correct. -->
+                </form>
+                <!-- This closes the registration form. -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

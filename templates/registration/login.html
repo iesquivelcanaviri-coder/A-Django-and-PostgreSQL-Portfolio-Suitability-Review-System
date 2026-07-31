@@ -1,9 +1,54 @@
 {% extends 'base.html' %}
+{# This tells Django that this page uses base.html as the main layout. #}
+{# The login page will inherit the navbar, Bootstrap links, footer, and main structure from base.html. #}
 {% block title %}Login | SuitabilityDesk{% endblock %}
+{# This fills the title block from base.html. #} {# It controls the browser tab title for this page. #}
+{# The page title will show as "Login | SuitabilityDesk" instead of only the default site name. #}
 {% block content %}
-<div class="row justify-content-center"><div class="col-md-6"><div class="card"><div class="card-body">
-<h1>Login</h1>
-<form method="post">{% csrf_token %}{{ form.as_p }}<button class="btn btn-primary" type="submit">Login</button></form>
-<p class="mt-3"><a href="{% url 'password_reset' %}">Forgot your password?</a></p>
-</div></div></div></div>
+{# This starts the main content block. #} {# Everything inside this block is inserted into the content area of base.html. #}
+<div class="row justify-content-center">
+    {# Bootstrap row creates a horizontal layout section. #}
+    {# justify-content-center moves the login box to the centre of the page. #}
+    <div class="col-md-6">
+        {# This makes the login form take 6 columns on medium screens and above. #}
+        {# Since Bootstrap uses a 12-column grid, col-md-6 means half the page width. #}
+        <div class="card">
+            {# Bootstrap card gives the login form a clean boxed layout. #}
+            {# This helps the form look more professional and separated from the page background. #}
+            <div class="card-body">
+                {# card-body adds padding inside the Bootstrap card. #}
+                {# Without this, the form would sit too close to the card edges. #}
+                <h1>Login</h1>
+                {# This is the visible heading shown on the page. #}{# It tells the user they are on the login screen. #}
+                <form method="post">
+                    {# This starts the login form. #}
+                    {# method="post" means the form sends data securely to the Django view instead of putting it in the URL. #}
+                    {% csrf_token %}
+                    {# Django security token. #}{# CSRF means Cross-Site Request Forgery protection. #}
+                    {# This prevents fake external websites from submitting forms to this app. #}
+                    {# Django requires this token in POST forms. #}
+                    {{ form.as_p }}
+                    {# Django automatically renders the login form fields. #}
+                    {# form.as_p means each form field is wrapped in paragraph tags. #}
+                    {# For the login page, Django usually provides username and password fields through its authentication view. #}
+                    <button class="btn btn-primary" type="submit">Login</button>
+                    {# This is the submit button for the form. #}
+                    {# btn and btn-primary are Bootstrap classes that style the button. #}
+                    {# type="submit" sends the form data to Django when clicked. #}
+                </form>
+                {# This closes the login form. #}
+                <p class="mt-3">
+                    {# This creates a paragraph below the form. #}
+                    {# mt-3 is a Bootstrap spacing class that adds margin-top. #}
+                    <a href="{% url 'password_reset' %}">Forgot your password?</a>
+                    {# This creates a link to the password reset page. #}
+                    {# {% url 'password_reset' %} asks Django to find the URL pattern named password_reset. #}
+                    {# This is better than hardcoding the link because Django can update the URL automatically if routes change. #}
+                </p>
+                {# This closes the paragraph containing the password reset link. #}
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
