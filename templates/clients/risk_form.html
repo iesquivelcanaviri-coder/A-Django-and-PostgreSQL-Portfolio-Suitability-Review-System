@@ -1,2 +1,36 @@
 {% extends 'base.html' %}
-{% block content %}<div class="card"><div class="card-body"><h1>Create Risk Assessment</h1><p class="text-muted">The outcome is calculated automatically using a simple educational suitability rule.</p><form method="post">{% csrf_token %}{{ form.as_p }}<button class="btn btn-primary">Save Assessment</button></form></div></div>{% endblock %}
+{# This tells Django that this page will use base.html as the main layout, so it inherits the navbar, CSS links, Bootstrap setup, and general page structure. #}
+{% block content %}
+{# This starts the content block that was defined in base.html, meaning everything inside this block will appear in the main page body. #}
+<div class="card">
+    {# This Bootstrap card creates a neat boxed section around the form, making the page look more organised and professional. #}
+    <div class="card-body">
+        {# The card-body class adds padding inside the card so the text and form are not pushed right against the edges. #}
+        <h1>Create Risk Assessment</h1>
+        {# This is the main heading of the page, telling the user that they are creating a new risk assessment record. #}
+        <p class="text-muted">
+            {# The text-muted Bootstrap class makes this explanation lighter in colour, so it looks like helpful guidance rather than the main content. #}
+            The outcome is calculated automatically using a simple educational suitability rule.
+            {# This tells the user that they do not manually choose the final suitability result because the Django model or form logic calculates it automatically. #}
+        </p>
+        {# This closes the explanatory paragraph above the form. #}
+        <form method="post">
+            {# This creates an HTML form that sends data back to the Django view using the POST method, which is used when saving or changing data. #}
+            {% csrf_token %}
+            {# This adds Django's CSRF protection token, which helps protect the form from unsafe or fake submissions. #}
+            {{ form.as_p }}
+            {# This displays the Django form fields automatically, with each field wrapped in a paragraph tag for simple formatting. #}
+            <button class="btn btn-primary">
+                {# This creates the submit button and uses Bootstrap classes to make it look like a blue primary action button. #}
+                Save Assessment
+                {# This is the text the user sees on the button, showing that clicking it will save the risk assessment. #}
+            </button>
+            {# This closes the save button. #}
+        </form>
+        {# This closes the form, meaning all form fields and the button above belong to the same POST submission. #}
+    </div>
+    {# This closes the Bootstrap card-body section. #}
+</div>
+{# This closes the outer Bootstrap card container. #}
+{% endblock %}
+{# This ends the content block, so Django knows where this page's main content finishes inside base.html. #}

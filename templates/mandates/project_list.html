@@ -1,3 +1,88 @@
 {% extends 'base.html' %}
+{# This connects this page to base.html, so it reuses the main layout, navbar, CSS links, Bootstrap setup, and content block structure. #}
 {% block title %}Review Projects | SuitabilityDesk{% endblock %}
-{% block content %}<div class="d-flex justify-content-between align-items-center mb-3"><h1>Portfolio Review Projects</h1><a class="btn btn-primary" href="{% url 'mandates:project_create' %}">New Project</a></div><div class="card"><div class="card-body"><div class="table-responsive"><table class="table"><thead><tr><th>Project</th><th>Client</th><th>Start</th><th>End</th><th>Status</th><th>Priority</th></tr></thead><tbody>{% for p in projects %}<tr><td>{{ p.project_name }}</td><td>{{ p.client }}</td><td>{{ p.start_date }}</td><td>{{ p.end_date }}</td><td>{{ p.get_status_display }}</td><td>{{ p.priority }}</td></tr>{% empty %}<tr><td colspan="6">No review projects yet.</td></tr>{% endfor %}</tbody></table></div></div></div>{% endblock %}
+{# This sets the browser tab title for this page, but it only works if base.html has a matching {% block title %} inside the <title> tag. #}
+{% block content %}
+{# This starts the main content area that will be inserted into the {% block content %} section inside base.html. #}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    {# This Bootstrap flex container places the page heading on the left and the New Project button on the right. #}
+    {# d-flex makes the div a flexbox, justify-content-between pushes items apart, align-items-center vertically aligns them, and mb-3 adds bottom spacing. #}
+    <h1>Portfolio Review Projects</h1>
+    {# This is the main page heading that tells the user they are viewing the list of portfolio review projects. #}
+    <a class="btn btn-primary" href="{% url 'mandates:project_create' %}">New Project</a>
+    {# This is a Bootstrap primary button styled as a link. #}
+    {# The href uses Django's {% url %} tag, which means it connects to the named URL project_create inside the mandates app. #}
+    {# This is better than hardcoding a URL because if the URL path changes later, Django can still find it by name. #}
+</div>
+{# This closes the top heading and button row. #}
+<div class="card">
+    {# This Bootstrap card gives the project table a clean boxed layout. #}
+    <div class="card-body">
+        {# This adds padding inside the card, so the table is not touching the card edges. #}
+        <div class="table-responsive">
+            {# This Bootstrap wrapper makes the table scroll horizontally on smaller screens, which helps with mobile responsiveness. #}
+            <table class="table">
+                {# This creates the HTML table and applies Bootstrap's default table styling. #}
+                <thead>
+                    {# This starts the table header section where column names are displayed. #}
+                    <tr>
+                        {# This creates one header row in the table. #}
+                        <th>Project</th>
+                        {# This column shows the name of the portfolio review project. #}
+                        <th>Client</th>
+                        {# This column shows the client linked to the review project. #}
+                        <th>Start</th>
+                        {# This column shows the project start date. #}
+                        <th>End</th>
+                        {# This column shows the project end date. #}
+                        <th>Status</th>
+                        {# This column shows the project status, such as open, in review, approved, rejected, or completed depending on the model choices. #}
+                        <th>Priority</th>
+                        {# This column shows the project priority, which helps users understand which review needs attention first. #}
+                    </tr>
+                    {# This closes the table header row. #}
+                </thead>
+                {# This closes the table header section. #}
+                <tbody>
+                    {# This starts the table body, where database records are displayed. #}
+                    {% for p in projects %}
+                    {# This Django template loop goes through every project object passed from the view in the context variable called projects. #}
+                    {# The variable p is a temporary name for one PortfolioReviewProject record during each loop. #}
+                    <tr>
+                        {# This creates one table row for the current project record. #}
+                        <td>{{ p.project_name }}</td>
+                        {# This displays the project_name field from the current project object. #}
+                        {# The double curly brackets output database values into the HTML page. #}
+                        <td>{{ p.client }}</td>
+                        {# This displays the client linked to the project. #}
+                        {# If client is a ForeignKey, Django will normally display the value returned by the client's __str__ method. #}
+                        <td>{{ p.start_date }}</td>
+                        {# This displays the start_date field from the project record. #}
+                        <td>{{ p.end_date }}</td>
+                        {# This displays the end_date field from the project record. #}
+                        <td>{{ p.get_status_display }}</td>
+                        {# This displays the human-readable label for the status field. #}
+                        {# Django creates get_FIELD_display automatically when a model field uses choices, so get_status_display shows a friendly label instead of the stored database value. #}
+                        <td>{{ p.priority }}</td>
+                        {# This displays the priority value stored for the project. #}
+                    </tr>
+                    {# This closes the row for one project record. #}
+                    {% empty %}
+                    {# This Django template section runs only if the projects list is empty. #}
+                    {# It is useful because the page still gives feedback instead of showing a blank table. #}
+                    <tr>
+                        {# This creates a fallback row when there are no projects in the database. #}
+                        <td colspan="6">No review projects yet.</td>
+                        {# colspan="6" makes this message stretch across all six table columns. #}
+                        {# This tells the user that no portfolio review projects have been created yet. #}
+                    </tr>
+                    {# This closes the empty-state row. #}
+                    {% endfor %}
+                    {# This ends the Django for loop. #}
+                </tbody>
+                {# This closes the table body. #}
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

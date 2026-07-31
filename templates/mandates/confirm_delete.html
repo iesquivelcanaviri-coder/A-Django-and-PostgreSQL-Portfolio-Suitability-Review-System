@@ -1,2 +1,25 @@
 {% extends 'base.html' %}
-{% block content %}<div class="card"><div class="card-body"><h1>Confirm Delete</h1><p>Delete {{ object }}?</p><form method="post">{% csrf_token %}<button class="btn btn-danger">Delete</button></form></div></div>{% endblock %}
+{# This tells Django that this page is using base.html as the main layout, so it will reuse the navbar, styling, Bootstrap links, and general page structure from the parent template. #}
+{% block content %}
+{# This opens the content block that was created in base.html, meaning everything inside this block will appear in the main body area of the page. #}
+<div class="card">
+    {# This Bootstrap card creates a neat boxed area around the delete confirmation content, which makes the page look more professional and consistent with the rest of the site. #}
+    <div class="card-body">
+        {# The card-body class adds spacing inside the card so the text and button are not stuck to the edges. #}
+        <h1>Confirm Delete</h1>
+        {# This heading tells the user clearly that they are on a confirmation page before deleting something from the database. #}
+        <p>Delete {{ object }}?</p>
+        {# This displays the object that Django is about to delete, so the user can check what record they are removing before confirming. #}
+        {# The {{ object }} value usually comes from Django's DeleteView, which automatically sends the selected database object to the template. #}
+        <form method="post">
+            {# This form sends a POST request when the user clicks Delete, which is important because deleting data should not happen through a simple GET request. #}
+            {% csrf_token %}
+            {# This adds Django's CSRF protection token, which helps protect the form from cross-site request forgery attacks. #}
+            {# Django expects this token in POST forms, especially when the form changes or deletes database data. #}
+            <button class="btn btn-danger">Delete</button>
+            {# This is the delete button. The Bootstrap btn-danger class makes it red, which visually warns the user that this action is destructive. #}
+        </form>
+        {# This closes the form after the delete button, so only the button and CSRF token are submitted to Django. #}
+    </div>
+</div>
+{% endblock %}

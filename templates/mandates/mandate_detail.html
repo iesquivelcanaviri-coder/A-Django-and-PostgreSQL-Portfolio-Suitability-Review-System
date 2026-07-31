@@ -1,7 +1,143 @@
 {% extends 'base.html' %}
+<!-- This template inherits from base.html, so it reuses the same navbar, layout, CSS links and main page structure across the whole Django project. -->
 {% block title %}{{ mandate.mandate_name }} | SuitabilityDesk{% endblock %}
+<!-- This changes the browser tab title for this page, using the current mandate name from the database followed by the project name. -->
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3"><h1>{{ mandate.mandate_name }}</h1><div><a class="btn btn-outline-primary" href="{% url 'mandates:update' mandate.pk %}">Edit</a>{% if request.user.profile.can_approve_mandates %}<a class="btn btn-success" href="{% url 'mandates:approve' mandate.pk %}">Approve</a>{% endif %}</div></div>
-<div class="row g-4"><div class="col-lg-6"><div class="card"><div class="card-body"><h2>Mandate Rules</h2><p><strong>Client:</strong> {{ mandate.client }}</p><p><strong>Objective:</strong> {{ mandate.objective }}</p><p><strong>Status:</strong> {{ mandate.get_status_display }}</p><p><strong>Currency:</strong> {{ mandate.base_currency }}</p><p><strong>Max Position:</strong> {{ mandate.maximum_position_weight }}%</p></div></div></div><div class="col-lg-6"><div class="card"><div class="card-body"><h2>Suitability Restrictions</h2><p><strong>ESG:</strong> {{ mandate.esg_preference|default:'Not recorded' }}</p><p><strong>Product Restriction:</strong> {{ mandate.product_restriction|default:'Not recorded' }}</p><p><strong>Liquidity:</strong> {{ mandate.liquidity_requirement|default:'Not recorded' }}</p><p><strong>Approved by:</strong> {{ mandate.approved_by|default:'Not approved yet' }}</p></div></div></div></div>
-<div class="card mt-4"><div class="card-body"><h2>Categorised Holdings</h2><a class="btn btn-sm btn-primary mb-3" href="{% url 'mandates:holding_create' %}">Add Holding</a><div class="table-responsive"><table class="table"><thead><tr><th>Name</th><th>Ticker</th><th>Category</th><th>Target</th><th>Current</th><th>Currency</th><th>Action</th></tr></thead><tbody>{% for h in mandate.holdings.all %}<tr><td>{{ h.name }}</td><td>{{ h.ticker }}</td><td>{{ h.asset_category }}</td><td>{{ h.target_weight }}%</td><td>{{ h.current_weight }}%</td><td>{{ h.currency }}</td><td><a class="text-danger" href="{% url 'mandates:holding_delete' h.pk %}">Delete</a></td></tr>{% empty %}<tr><td colspan="7">No holdings recorded.</td></tr>{% endfor %}</tbody></table></div></div></div>
+<!-- This starts the main content area that will be inserted into the content block inside base.html. -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <!-- This Bootstrap flex container places the mandate title on the left and the action buttons on the right. -->
+    <h1>{{ mandate.mandate_name }}</h1>
+    <!-- This displays the name of the selected mandate from the database. The variable comes from the Django view context. -->
+    <div>
+        <!-- This small div groups the Edit and Approve buttons together on the right side of the heading row. -->
+        <a class="btn btn-outline-primary" href="{% url 'mandates:update' mandate.pk %}">Edit</a>
+        <!-- This creates an Edit button. The URL tag uses the mandate primary key so Django knows exactly which mandate to update. -->
+        {% if request.user.profile.can_approve_mandates %}
+        <!-- This checks the logged-in user's profile permission. Only users with approval rights should see the Approve button. -->
+            <a class="btn btn-success" href="{% url 'mandates:approve' mandate.pk %}">Approve</a>
+            <!-- This creates the Approve button and passes the mandate primary key into the approval URL. -->
+        {% endif %}
+    </div>
+</div>
+<div class="row g-4">
+    <!-- This Bootstrap row creates a two-column layout with spacing between the cards. -->
+    <div class="col-lg-6">
+        <!-- This column takes half the screen width on large screens, helping the page look organised and responsive. -->
+        <div class="card">
+            <!-- This Bootstrap card visually groups the mandate rule information together. -->
+            <div class="card-body">
+                <!-- The card body adds padding inside the card so the content does not touch the edges. -->
+                <h2>Mandate Rules</h2>
+                <!-- This heading introduces the main investment mandate rules section. -->
+                <p><strong>Client:</strong> {{ mandate.client }}</p>
+                <!-- This displays the client linked to the mandate. The client is likely connected through a ForeignKey relationship in the model. -->
+                <p><strong>Objective:</strong> {{ mandate.objective }}</p>
+                <!-- This displays the investment objective saved for this mandate, such as growth, income or preservation. -->
+                <p><strong>Status:</strong> {{ mandate.get_status_display }}</p>
+                <!-- This displays the human-readable status label from the model choices, instead of showing the raw database value. -->
+                <p><strong>Currency:</strong> {{ mandate.base_currency }}</p>
+                <!-- This shows the base currency used for the mandate, which is important in a portfolio-management context. -->
+                <p><strong>Max Position:</strong> {{ mandate.maximum_position_weight }}%</p>
+                <!-- This shows the maximum allowed position weight, helping demonstrate suitability controls and risk limits. -->
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <!-- This second column sits beside the first one on large screens and stacks underneath on smaller screens. -->
+        <div class="card">
+            <!-- This Bootstrap card groups the suitability restrictions separately from the basic mandate rules. -->
+            <div class="card-body">
+                <!-- This card body provides spacing inside the restrictions card. -->
+                <h2>Suitability Restrictions</h2>
+                <!-- This heading introduces the restrictions section, which connects to the suitability and governance purpose of the project. -->
+                <p><strong>ESG:</strong> {{ mandate.esg_preference|default:'Not recorded' }}</p>
+                <!-- This shows the ESG preference if one exists. The default filter avoids showing a blank field when no value has been saved. -->
+                <p><strong>Product Restriction:</strong> {{ mandate.product_restriction|default:'Not recorded' }}</p>
+                <!-- This displays any product restrictions, such as avoiding complex products or restricted investment types. -->
+                <p><strong>Liquidity:</strong> {{ mandate.liquidity_requirement|default:'Not recorded' }}</p>
+                <!-- This shows liquidity needs, which matter because a client may need access to cash within a certain timeframe. -->
+                <p><strong>Approved by:</strong> {{ mandate.approved_by|default:'Not approved yet' }}</p>
+                <!-- This displays who approved the mandate, or shows a default message if the mandate has not been approved. -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-body">
+        <!-- This card body contains the holdings table and the Add Holding button. -->
+        <h2>Categorised Holdings</h2>
+        <!-- This heading introduces the holdings linked to this mandate. -->
+        <a class="btn btn-sm btn-primary mb-3" href="{% url 'mandates:holding_create' %}">Add Holding</a>
+        <!-- This button links to the holding creation page, allowing the user to add a new portfolio holding. -->
+        <div class="table-responsive">
+            <!-- This Bootstrap wrapper makes the table scroll horizontally on smaller screens instead of breaking the layout. -->
+            <table class="table">
+                <!-- This creates a Bootstrap styled table to display holdings from the database. -->
+                <thead>
+                    <!-- The table head contains the column names. -->
+                    <tr>
+                        <!-- This table row holds all the heading cells. -->
+                        <th>Name</th>
+                        <!-- This column shows the holding name. -->
+                        <th>Ticker</th>
+                        <!-- This column shows the investment ticker symbol, such as MSFT or an ETF ticker. -->
+                        <th>Category</th>
+                        <!-- This column shows the asset category linked to the holding, such as equity, bond, ETF or cash. -->
+                        <th>Target</th>
+                        <!-- This column shows the target portfolio weight for the holding. -->
+                        <th>Current</th>
+                        <!-- This column shows the current portfolio weight for the holding. -->
+                        <th>Currency</th>
+                        <!-- This column shows the currency of the holding. -->
+                        <th>Action</th>
+                        <!-- This column contains actions the user can take, such as deleting a holding. -->
+                    </tr>
+                    <!-- This closes the table heading row. -->
+                </thead>
+                <!-- This closes the table heading section. -->
+                <tbody>
+                    <!-- The table body contains the actual holding records from the database. -->
+                    {% for h in mandate.holdings.all %}
+                    <!-- This loops through all holdings connected to the current mandate. This uses the related_name from the model relationship. -->
+                        <tr>
+                            <!-- This creates one table row for each holding. -->
+                            <td>{{ h.name }}</td>
+                            <!-- This displays the name of the holding. -->
+                            <td>{{ h.ticker }}</td>
+                            <!-- This displays the ticker symbol for the holding. -->
+                            <td>{{ h.asset_category }}</td>
+                            <!-- This displays the asset category object linked to the holding through the database relationship. -->
+                            <td>{{ h.target_weight }}%</td>
+                            <!-- This displays the target allocation percentage for the holding. -->
+                            <td>{{ h.current_weight }}%</td>
+                            <!-- This displays the current allocation percentage for the holding. -->
+                            <td>{{ h.currency }}</td>
+                            <!-- This displays the currency assigned to the holding. -->
+                            <td>
+                                <!-- This table cell contains the action link for the holding. -->
+                                <a class="text-danger" href="{% url 'mandates:holding_delete' h.pk %}">Delete</a>
+                                <!-- This creates a delete link for the holding, using the holding primary key so Django deletes the correct record. -->
+                            </td>
+                            <!-- This closes the action cell. -->
+                        </tr>
+                        <!-- This closes the holding row. -->
+                    {% empty %}
+                    <!-- This runs only if there are no holdings connected to the current mandate. -->
+                        <tr>
+                            <!-- This creates a fallback row when the holdings list is empty. -->
+                            <td colspan="7">No holdings recorded.</td>
+                            <!-- This message spans all seven columns so the empty-state message looks clean across the whole table. -->
+                        </tr>
+                        <!-- This closes the empty-state row. -->
+                    {% endfor %}
+                    <!-- This ends the loop through the mandate holdings. -->
+                </tbody>
+                <!-- This closes the table body. -->
+            </table>
+            <!-- This closes the holdings table. -->
+        </div>
+    </div>
+</div>
 {% endblock %}

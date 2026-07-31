@@ -1,5 +1,39 @@
 {% extends 'base.html' %}
+<!-- This tells Django that this page is using base.html as the main layout, so it will inherit the navbar, styling, Bootstrap links, and shared page structure from the main template. -->
 {% block title %}{{ title }} | SuitabilityDesk{% endblock %}
+<!-- This fills the title block from base.html, so the browser tab will show the current page title followed by the project name SuitabilityDesk. -->
+<!-- The {{ title }} value comes from the Django view, which means the same form template can be reused for different actions such as creating or updating a mandate. -->
 {% block content %}
-<div class="card"><div class="card-body"><h1>{{ title }}</h1><form method="post" class="needs-validation" novalidate>{% csrf_token %}{{ form.as_p }}<button class="btn btn-primary">Save Mandate</button></form></div></div>
+<!-- This opens the content block, which is the main page area defined inside base.html. Everything inside this block will appear in the body section of the page. -->
+<div class="card">
+    <!-- This Bootstrap card creates a clean container around the form, making the mandate form look organised and consistent with the rest of the site. -->
+    <div class="card-body">
+        <!-- The card-body class adds spacing inside the card, so the heading and form are not pressed against the edges. -->
+        <h1>{{ title }}</h1>
+        <!-- This displays the page heading using the title sent from the Django view. -->
+        <!-- For example, the view might send "Create Mandate" or "Update Mandate", so this template can be reused instead of creating separate pages. -->
+        <form method="post" class="needs-validation" novalidate>
+            <!-- This starts the HTML form used to submit mandate data back to the Django view. -->
+            <!-- method="post" means the form is sending data that may create or update database records, rather than just requesting a page. -->
+            <!-- class="needs-validation" connects the form to Bootstrap validation styling, which helps make the form look more professional. -->
+            <!-- novalidate turns off the browser's default validation messages, so custom Bootstrap or Django validation can handle errors more consistently. -->
+            {% csrf_token %}
+            <!-- This Django security tag protects the form from Cross-Site Request Forgery attacks. -->
+            <!-- Django expects this token on POST forms, because the form is changing data in the database. -->
+            <!-- Without this token, Django will usually reject the form submission for security reasons. -->
+            {{ form.as_p }}
+            <!-- This renders the Django form fields automatically, with each field wrapped in a paragraph tag. -->
+            <!-- The form object comes from the Django view, usually from a ModelForm connected to the InvestmentMandate model. -->
+            <!-- This is useful because Django can generate the input fields based on the form class instead of writing every input manually. -->
+            <!-- If the form has validation errors, Django can also display those errors beside the relevant fields. -->
+            <button class="btn btn-primary">Save Mandate</button>
+            <!-- This creates the submit button for the form. -->
+            <!-- btn and btn-primary are Bootstrap classes that make the button styled and visually consistent with the rest of the application. -->
+            <!-- When clicked, this button submits the mandate form data to the Django view for processing and saving. -->
+        </form>
+        <!-- This closes the form, so all fields and the button above are part of the same POST submission. -->
+    </div>
+</div>
+
 {% endblock %}
+

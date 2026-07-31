@@ -1,59 +1,123 @@
 {% load static %}
+{# Loads Django's static template tag, so this file can correctly find CSS, JavaScript and image files from the static folder. #}
 <!doctype html>
+{# Declares this file as an HTML5 document, which tells the browser how to read the page structure. #}
 <html lang="en">
+{# Opens the main HTML document and sets the language to English, which helps browsers and accessibility tools. #}
 <head>
+    {# The head section contains page information that is not directly shown as visible content on the page. #}
     <meta charset="utf-8">
+    {# Sets the character encoding to UTF-8 so the page can display normal text, symbols and special characters correctly. #}
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    {# Makes the page responsive by matching the page width to the device screen, which is important for mobile and tablet layouts. #}
     <title>{% block title %}SuitabilityDesk{% endblock %}</title>
+    {# Creates a Django title block so each child template can change the browser tab title while keeping SuitabilityDesk as the default. #}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    {# Loads Bootstrap CSS from a CDN, giving the project ready-made responsive layout, navbar, button, form and table styling. #}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {# Loads the project's own custom CSS file from static/css/style.css using Django's static file system. #}
 </head>
+{# Closes the head section before starting the visible body of the page. #}
 <body>
+{# Opens the body section, where all visible page content such as the navbar, main content and footer will appear. #}
 <nav class="navbar navbar-expand-lg navbar-dark bg-navy shadow-sm">
+    {# Creates the main Bootstrap navigation bar; navbar-expand-lg makes it collapse on smaller screens, and bg-navy is a custom CSS class. #}
     <div class="container-fluid">
+        {# Uses a full-width Bootstrap container so the navbar content stretches neatly across the screen. #}
         <a class="navbar-brand fw-bold" href="{% url 'public_home' %}">SuitabilityDesk</a>
+        {# Creates the clickable app name in the navbar and sends users to the public home page using Django's URL name. #}
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+            {# Creates the mobile menu button that appears when the navbar collapses on smaller screens. #}
             <span class="navbar-toggler-icon"></span>
+            {# Displays the Bootstrap hamburger icon inside the mobile menu button. #}
         </button>
+        {# Closes the navbar toggle button. #}
         <div class="collapse navbar-collapse" id="mainNav">
+            {# Wraps the menu links inside a collapsible Bootstrap area controlled by the button above. #}
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                {# Creates the left-side navbar link list; me-auto pushes later content to the right. #}
                 {% if user.is_authenticated %}
+                    {# Checks whether the current Django user is logged in before showing private application links. #}
                     <li class="nav-item"><a class="nav-link" href="{% url 'dashboard:home' %}">Dashboard</a></li>
+                    {# Shows the Dashboard link only to logged-in users and uses the dashboard app's named URL. #}
                     <li class="nav-item"><a class="nav-link" href="{% url 'clients:list' %}">Clients</a></li>
+                    {# Shows the Clients link, which connects to the clients app and its list view. #}
                     <li class="nav-item"><a class="nav-link" href="{% url 'mandates:list' %}">Mandates</a></li>
+                    {# Shows the Mandates link, connecting the user to the investment mandate records in the mandates app. #}
                     <li class="nav-item"><a class="nav-link" href="{% url 'mandates:projects' %}">Review Projects</a></li>
+                    {# Shows the Review Projects link, which supports the assignment requirement for project records and workflow tracking. #}
                     <li class="nav-item"><a class="nav-link" href="{% url 'messaging:inbox' %}">Inbox</a></li>
+                    {# Shows the Inbox link, connecting to the messaging app where users can read and manage internal messages. #}
                 {% endif %}
+            
             </ul>
+            
             <ul class="navbar-nav ms-auto">
+                {# Creates the right-side navbar list; ms-auto pushes this section to the far right of the navbar. #}
                 {% if user.is_authenticated %}
+                    {# Checks again whether the user is logged in so the navbar can show profile and logout options. #}
                     <li class="nav-item"><a class="nav-link" href="{% url 'accounts:profile' %}">{{ user.username }}</a></li>
+                    {# Shows the logged-in user's username and links it to the profile page in the accounts app. #}
                     <li class="nav-item">
-                        <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="btn btn-outline-light btn-sm" type="submit">Logout</button></form>
+                        {# Creates a navbar item for the logout form. #}
+                        <form method="post" action="{% url 'logout' %}">
+                            {# Uses a POST form for logout, which is safer than logging out through a normal GET link. #}
+                            {% csrf_token %}
+                            {# Adds Django's CSRF protection token so the logout form is accepted securely. #}
+                            <button class="btn btn-outline-light btn-sm" type="submit">Logout</button>
+                            {# Displays a small Bootstrap-styled logout button. #}
+                        </form>
+                        {# Closes the logout form. #}
                     </li>
+                    {# Closes the logout navbar item. #}
                 {% else %}
+                    {# If the user is not logged in, show public authentication links instead. #}
                     <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+                    {# Shows the login link using Django's built-in authentication URL name. #}
                     <li class="nav-item"><a class="btn btn-info btn-sm" href="{% url 'accounts:register' %}">Register</a></li>
+                    {# Shows the registration button, which links to the custom register view in the accounts app. #}
                 {% endif %}
             </ul>
         </div>
-    </div>
+    </div> 
 </nav>
+{# Closes the full navigation bar. #}
+
 <main class="container py-4">
+    {# Opens the main content area; Bootstrap container centres the content and py-4 adds vertical spacing. #}
     {% if messages %}
+        {# Checks whether Django's messages framework has any success, error, warning or info messages to display. #}
         {% for message in messages %}
+            {# Loops through each Django message so more than one alert can be shown if needed. #}
             <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+                {# Creates a Bootstrap alert and uses the Django message tag to decide the alert style, with info as the fallback. #}
                 {{ message }}
+                {# Displays the actual message text passed from the Django view. #}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                {# Adds a Bootstrap close button so the user can dismiss the alert from the page. #}
             </div>
+            {# Closes the Bootstrap alert box. #}
         {% endfor %}
+        {# Ends the loop through all Django messages. #}
     {% endif %}
+    {# Ends the message display condition. #}
     {% block content %}{% endblock %}
+    {# This is the main content block where child templates insert their page-specific content. #}
 </main>
+{# Closes the main content area. #}
+
 <footer class="border-top py-3 text-center text-muted small">
+    {# Creates a simple footer with a top border, spacing, centred text, muted colour and smaller font size. #}
     Educational portfolio suitability review platform. Not investment advice.
+    {# Displays the academic/financial disclaimer so users understand the app is only an educational project. #}
 </footer>
+{# Closes the footer section. #}
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+{# Loads Bootstrap JavaScript so components like the navbar collapse, alerts and dismiss buttons work properly. #}
 <script src="{% static 'js/script.js' %}"></script>
+{# Loads the project's custom JavaScript file from static/js/script.js using Django's static file system. #}
 </body>
+{# Closes the visible body section of the HTML page. #}
 </html>
+{# Closes the complete HTML document. #}

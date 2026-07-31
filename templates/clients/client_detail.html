@@ -1,10 +1,147 @@
 {% extends 'base.html' %}
+{# This tells Django that this page reuses the shared base.html layout, so the navbar, CSS links, Bootstrap setup and main page structure come from the parent template. #}
 {% block title %}{{ client.full_name }} | SuitabilityDesk{% endblock %}
+{# This changes the browser tab title for this specific client page, using the client's full name from the database plus the project name. #}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3"><h1>{{ client.full_name }}</h1><div><a class="btn btn-outline-primary" href="{% url 'clients:update' client.pk %}">Edit Client</a><a class="btn btn-primary" href="{% url 'clients:financial' client.pk %}">Financial Profile</a></div></div>
-<div class="row g-4">
-<div class="col-lg-6"><div class="card"><div class="card-body"><h2>Client Details</h2><p><strong>Email:</strong> {{ client.email }}</p><p><strong>Phone:</strong> {{ client.phone|default:'Not recorded' }}</p><p><strong>Type:</strong> {{ client.get_client_type_display }}</p><p><strong>Tax Residency:</strong> {{ client.tax_residency|default:'Not recorded' }}</p></div></div></div>
-<div class="col-lg-6"><div class="card"><div class="card-body"><h2>Financial Context</h2>{% if client.financial_profile %}<p><strong>Net Worth:</strong> {{ client.financial_profile.net_worth }}</p><p><strong>Existing Investments:</strong> {{ client.financial_profile.existing_investments }}</p><p><strong>Liquidity Need:</strong> {{ client.financial_profile.get_liquidity_need_display }}</p><p><strong>Time Horizon:</strong> {{ client.financial_profile.time_horizon_years }} years</p>{% else %}<p>No financial profile recorded.</p>{% endif %}</div></div></div>
+{# This opens the main content block that base.html expects, so everything inside here is inserted into the main page area. #}
+<div class="d-flex justify-content-between align-items-center mb-3">
+{# This Bootstrap flex container puts the client name on the left and the action buttons on the right, making the page header look organised. #}
+    <h1>{{ client.full_name }}</h1>
+    {# This displays the full name of the selected client, which comes from the ClientProfile object passed from the Django view. #}
+    <div>
+    {# This small div groups the two action buttons together so they appear beside each other in the page header. #}
+        <a class="btn btn-outline-primary" href="{% url 'clients:update' client.pk %}">Edit Client</a>
+        {# This creates a Bootstrap outline button that links to the client update page, using the client's primary key so Django knows which record to edit. #}
+        <a class="btn btn-primary" href="{% url 'clients:financial' client.pk %}">Financial Profile</a>
+        {# This creates a stronger primary button that links to the financial profile page for this same client, again using client.pk for the correct database record. #}
+    </div>
+    {# This closes the button group div. #}
 </div>
-<div class="card mt-4"><div class="card-body"><h2>Risk Assessments</h2><a class="btn btn-sm btn-primary mb-3" href="{% url 'clients:risk_create' %}">New Risk Assessment</a><div class="table-responsive"><table class="table"><thead><tr><th>Date</th><th>Tolerance</th><th>Capacity</th><th>Score</th><th>Outcome</th></tr></thead><tbody>{% for assessment in client.risk_assessments.all %}<tr><td>{{ assessment.created_at|date:'Y-m-d' }}</td><td>{{ assessment.get_risk_tolerance_display }}</td><td>{{ assessment.get_risk_capacity_display }}</td><td>{{ assessment.assessment_score }}</td><td>{{ assessment.get_outcome_display }}</td></tr>{% empty %}<tr><td colspan="5">No risk assessments yet.</td></tr>{% endfor %}</tbody></table></div></div></div>
+{# This closes the main top header section containing the client name and action buttons. #}
+
+<div class="row g-4">
+{# This starts a Bootstrap grid row, and g-4 adds spacing between the columns so the cards do not look squashed. #}
+    <div class="col-lg-6">
+    {# This creates a column that takes half the row on large screens, helping the details and financial context sit side by side. #}
+        <div class="card">
+        {# This creates a Bootstrap card, which is useful for grouping related client information in a clean box. #}
+            <div class="card-body">
+            {# This adds padding inside the card so the text does not touch the card edges. #}
+                <h2>Client Details</h2>
+                {# This heading labels the first card, showing that this section is about the client's personal and contact information. #}
+                <p><strong>Email:</strong> {{ client.email }}</p>
+                {# This displays the client's email address from the database. The strong tag makes the label stand out. #}
+                <p><strong>Phone:</strong> {{ client.phone|default:'Not recorded' }}</p>
+                {# This displays the client's phone number, and the default filter shows 'Not recorded' if the phone field is empty. #}
+                <p><strong>Type:</strong> {{ client.get_client_type_display }}</p>
+                {# This displays the readable label for the client type choice field instead of showing the raw database value. #}
+                <p><strong>Tax Residency:</strong> {{ client.tax_residency|default:'Not recorded' }}</p>
+                {# This displays the tax residency field, and uses a default message if no value has been entered. #}
+            </div>
+            {# This closes the card body for the client details section. #}
+        </div>
+        {# This closes the first Bootstrap card. #}
+    </div>
+    {# This closes the left column of the Bootstrap row. #}
+    <div class="col-lg-6">
+    {# This creates the second half-width column for the financial context card on large screens. #}
+        <div class="card">
+        {# This creates another Bootstrap card, keeping the financial details visually separate from the basic client details. #}
+            <div class="card-body">
+            {# This adds internal spacing inside the financial context card. #}
+                <h2>Financial Context</h2>
+                {# This heading labels the second card and shows that the section relates to the client's financial profile. #}
+                {% if client.financial_profile %}
+                {# This checks whether the client has a linked financial profile before trying to display its fields, which helps avoid missing-data errors. #}
+                    <p><strong>Net Worth:</strong> {{ client.financial_profile.net_worth }}</p>
+                    {# This displays the client's net worth from the related FinancialProfile model. #}
+                    <p><strong>Existing Investments:</strong> {{ client.financial_profile.existing_investments }}</p>
+                    {# This displays the value or description of the client's existing investments from the linked financial profile. #}
+                    <p><strong>Liquidity Need:</strong> {{ client.financial_profile.get_liquidity_need_display }}</p>
+                    {# This displays the readable version of the liquidity need choice, which is clearer than showing the raw stored value. #}
+                    <p><strong>Time Horizon:</strong> {{ client.financial_profile.time_horizon_years }} years</p>
+                    {# This displays the client's investment time horizon and adds the word years so the number has meaning for the user. #}
+                {% else %}
+                {# This runs when the client does not yet have a financial profile linked in the database. #}
+                    <p>No financial profile recorded.</p>
+                    {# This gives the user a clear message instead of leaving the financial card blank. #}
+                {% endif %}
+                {# This ends the if statement that checks whether a financial profile exists. #}
+            </div>
+            {# This closes the card body for the financial context section. #}
+        </div>
+        {# This closes the financial context card. #}
+    </div>
+    {# This closes the right Bootstrap column. #}
+</div>
+{# This closes the Bootstrap row containing the client details and financial context cards. #}
+
+<div class="card mt-4">
+{# This creates a new card underneath the first row, and mt-4 adds top margin so there is spacing before the risk assessment section. #}
+    <div class="card-body">
+    {# This adds padding inside the risk assessment card. #}
+        <h2>Risk Assessments</h2>
+        {# This heading labels the section that displays all risk assessments linked to the current client. #}
+        <a class="btn btn-sm btn-primary mb-3" href="{% url 'clients:risk_create' %}">New Risk Assessment</a>
+        {# This creates a small primary button that takes the user to the form for creating a new risk assessment. #}
+        <div class="table-responsive">
+        {# This Bootstrap wrapper makes the table scroll nicely on smaller screens instead of breaking the page layout. #}
+            <table class="table">
+            {# This creates a Bootstrap-styled table for showing the client's risk assessment records clearly. #}
+                <thead>
+                {# This starts the table header section, where the column names are placed. #}
+                    <tr>
+                    {# This starts the header row of the table. #}
+                        <th>Date</th>
+                        {# This column shows when the risk assessment was created. #}
+                        <th>Tolerance</th>
+                        {# This column shows the client's risk tolerance, meaning how much investment risk they are willing to accept. #}
+                        <th>Capacity</th>
+                        {# This column shows the client's risk capacity, meaning how much risk they can financially afford to take. #}
+                        <th>Score</th>
+                        {# This column shows the calculated or stored assessment score. #}
+                        <th>Outcome</th>
+                        {# This column shows the final suitability outcome for the assessment. #}
+                    </tr>
+                    {# This closes the table header row. #}
+                </thead>
+                {# This closes the table header section. #}
+                <tbody>
+                {# This starts the table body, where the actual risk assessment records from the database are displayed. #}
+                    {% for assessment in client.risk_assessments.all %}
+                    {# This loops through all risk assessments linked to this client through the related name risk_assessments. #}
+                        <tr>
+                        {# This starts one table row for one risk assessment record. #}
+                            <td>{{ assessment.created_at|date:'Y-m-d' }}</td>
+                            {# This displays the assessment creation date in year-month-day format, which keeps the date neat and consistent. #}
+                            <td>{{ assessment.get_risk_tolerance_display }}</td>
+                            {# This displays the readable label for the risk tolerance choice field. #}
+                            <td>{{ assessment.get_risk_capacity_display }}</td>
+                            {# This displays the readable label for the risk capacity choice field. #}
+                            <td>{{ assessment.assessment_score }}</td>
+                            {# This displays the stored risk assessment score from the assessment object. #}
+                            <td>{{ assessment.get_outcome_display }}</td>
+                            {# This displays the readable outcome label, such as suitable or further review needed, depending on how the model choices are set. #}
+                        </tr>
+                        {# This closes the table row for one assessment. #}
+                    {% empty %}
+                    {# This runs if the client has no risk assessments yet, which is Django's clean way of handling an empty loop. #}
+                        <tr>
+                        {# This starts a table row for the empty-state message. #}
+                            <td colspan="5">No risk assessments yet.</td>
+                            {# This message spans all five columns so the table clearly tells the user there is no data yet. #}
+                        </tr>
+                        {# This closes the empty-state table row. #}
+                    {% endfor %}
+                    {# This ends the loop through the client's risk assessments. #}
+                </tbody>
+                {# This closes the table body. #}
+            </table>
+            {# This closes the risk assessment table. #}
+        </div>
+        {# This closes the responsive table wrapper. #}
+    </div>
+    {# This closes the card body for the risk assessments section. #}
+</div>
+{# This closes the risk assessments card. #}
 {% endblock %}

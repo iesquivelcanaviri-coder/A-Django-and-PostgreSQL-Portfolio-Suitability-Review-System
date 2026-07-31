@@ -1,6 +1,96 @@
 {% extends 'base.html' %}
+{# This tells Django that this page is using the shared base.html layout, so the navbar, CSS links, Bootstrap setup and main page structure come from base.html. #}
 {% block title %}Clients | SuitabilityDesk{% endblock %}
+{# This changes the browser tab title for this page, but only works if base.html has a matching {% block title %} inside the <title> tag. #}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3"><h1>Client Profiles</h1><a class="btn btn-primary" href="{% url 'clients:create' %}">New Client</a></div>
-<div class="card"><div class="card-body"><div class="table-responsive"><table class="table table-hover"><thead><tr><th>Name</th><th>Type</th><th>Email</th><th>Tax Residency</th><th>Action</th></tr></thead><tbody>{% for client in clients %}<tr><td>{{ client.full_name }}</td><td>{{ client.get_client_type_display }}</td><td>{{ client.email }}</td><td>{{ client.tax_residency }}</td><td><a href="{% url 'clients:detail' client.pk %}">Open</a></td></tr>{% empty %}<tr><td colspan="5">No clients yet.</td></tr>{% endfor %}</tbody></table></div></div></div>
+{# This starts the main content section of the page, and everything inside this block will be inserted into the content area of base.html. #}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    {# This Bootstrap flex container places the page heading on the left and the New Client button on the right. #}
+    {# d-flex turns the div into a flexible row layout. #}
+    {# justify-content-between pushes the heading and button apart. #}
+    {# align-items-center vertically aligns them neatly in the middle. #}
+    {# mb-3 adds spacing below this header section. #}
+    <h1>Client Profiles</h1>
+    {# This is the main page heading, telling the user they are viewing the list of client profiles. #}
+    <a class="btn btn-primary" href="{% url 'clients:create' %}">New Client</a>
+    {# This creates a Bootstrap-styled button link for adding a new client. #}
+    {# btn and btn-primary are Bootstrap classes that make the link look like a blue button. #}
+    {# {% url 'clients:create' %} uses Django's URL reversing system instead of hardcoding the path. #}
+    {# clients:create means Django will look inside the clients app namespace for the URL named create. #}
+</div>
+{# This closes the top heading and action button section. #}
+<div class="card">
+    {# This Bootstrap card creates a clean bordered container around the client table. #}
+    <div class="card-body">
+        {# card-body adds padding inside the card so the table is not touching the card edges. #}
+        <div class="table-responsive">
+            {# table-responsive makes the table scroll horizontally on smaller screens, which helps with mobile responsiveness. #}
+            <table class="table table-hover">
+                {# This creates the main HTML table used to display client records from the database. #}
+                {# table is a Bootstrap class that adds default table styling. #}
+                {# table-hover highlights rows when the user moves the mouse over them, improving usability. #}
+                <thead>
+                    {# thead contains the header row of the table, which labels each column. #}
+                    <tr>
+                        {# tr means table row. This row contains the column headings. #}
+                        <th>Name</th>
+                        {# This column will show the client's full name. #}
+                        <th>Type</th>
+                        {# This column will show the client type, for example individual, corporate or another choice from the model. #}
+                        <th>Email</th>
+                        {# This column will show the client's email address stored in the database. #}
+                        <th>Tax Residency</th>
+                        {# This column will show the client's tax residency, which is useful in suitability and compliance workflows. #}
+                        <th>Action</th>
+                        {# This column gives the user an action link, such as opening the client's detail page. #}
+                    </tr>
+                    {# This closes the table header row. #}
+                </thead>
+                {# This closes the table heading section. #}
+                <tbody>
+                    {# tbody contains the actual client data rows coming from the database through the Django view. #}
+                    {% for client in clients %}
+                    {# This Django template loop goes through every client object passed from the view in the clients context variable. #}
+                    {# The view probably does something like ClientProfile.objects.all() and sends it to the template as clients. #}
+                    <tr>
+                        {# This creates one table row for the current client in the loop. #}
+                        <td>{{ client.full_name }}</td>
+                        {# This displays the full_name field from the current client object. #}
+                        {# The double curly brackets mean Django prints a variable value into the HTML page. #}
+                        <td>{{ client.get_client_type_display }}</td>
+                        {# This displays the readable label for the client_type choice field. #}
+                        {# In Django, get_FIELD_display is used when a model field has choices and we want the human-friendly label instead of the database value. #}
+                        <td>{{ client.email }}</td>
+                        {# This displays the email field from the client profile record. #}
+                        <td>{{ client.tax_residency }}</td>
+                        {# This displays the tax_residency field from the client profile. #}
+                        {# This connects to the wider suitability workflow because tax residency can matter when recording client background information. #}
+                        <td>
+                            {# This table cell contains the action link for this client row. #}
+                            <a href="{% url 'clients:detail' client.pk %}">Open</a>
+                            {# This link opens the detail page for this specific client. #}
+                            {# {% url 'clients:detail' client.pk %} tells Django to build the URL using the client's primary key. #}
+                            {# client.pk is the database primary key, so Django knows exactly which client record to open. #}
+                        </td>
+                        {# This closes the action cell. #}
+                    </tr>
+                    {# This closes the table row for one client. #}
+                    {% empty %}
+                    {# This special Django template tag runs only if the clients list is empty. #}
+                    {# It is useful because the page still looks professional even when there are no records yet. #}
+                    <tr>
+                        {# This creates a fallback table row when there are no client profiles in the database. #}
+                        <td colspan="5">No clients yet.</td>
+                        {# colspan="5" makes this message stretch across all five columns of the table. #}
+                        {# This tells the user clearly that no client records have been created yet. #}
+                    </tr>
+                    {# This closes the empty-state row. #}
+                    {% endfor %}
+                    {# This ends the Django for loop. #}
+                </tbody>
+                {# This closes the body of the table where the database records are displayed. #}
+            </table> 
+        </div>    
+    </div>    
+</div>
 {% endblock %}

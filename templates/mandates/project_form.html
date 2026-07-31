@@ -1,2 +1,94 @@
 {% extends 'base.html' %}
-{% block content %}<div class="card"><div class="card-body"><h1>Create Review Project</h1><p class="text-muted">Stores project name, description, start/end dates, stakeholders through the project model, and status.</p><form method="post" class="needs-validation" novalidate>{% csrf_token %}{{ form.as_p }}<button class="btn btn-primary">Save Project</button></form></div></div>{% endblock %}
+<!-- This connects this page to base.html, so the page reuses the main layout, navbar, Bootstrap links, CSS, and shared structure instead of repeating them again. -->
+{% block title %}Mandates | SuitabilityDesk{% endblock %}
+<!-- This fills the title block from base.html, so the browser tab will show "Mandates | SuitabilityDesk" for this page. -->
+{% block content %}
+<!-- This starts the main content block that base.html leaves empty for each individual page to fill in. -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <!-- This Bootstrap flex container puts the page heading on the left and the button on the right, making the page look more professional and organised. -->
+    <h1>Investment Mandates</h1>
+    <!-- This is the main heading shown on the page, telling the user they are viewing the list of investment mandates. -->
+    <a class="btn btn-primary" href="{% url 'mandates:create' %}">New Mandate</a>
+    <!-- This is a Bootstrap primary button that links to the mandate creation page using Django's URL name instead of hardcoding the URL. -->
+    <!-- The 'mandates:create' URL name connects this template to the mandates app URL configuration, which is better than typing a manual path like /mandates/create/. -->
+</div>
+<!-- This closes the heading/button row. -->
+<div class="card">
+    <!-- This Bootstrap card creates a clean container around the table so the list looks structured and separate from the background. -->
+    <div class="card-body">
+        <!-- This adds padding inside the card so the table does not touch the edges of the card. -->
+        <div class="table-responsive">
+            <!-- This Bootstrap class makes the table scroll horizontally on smaller screens, which helps the page stay responsive on mobile or narrow screens. -->
+            <table class="table table-hover">
+                <!-- This creates the table. The Bootstrap 'table' class styles it, and 'table-hover' highlights rows when the user moves the mouse over them. -->
+                <thead>
+                    <!-- This starts the table header section, where the column names are placed. -->
+                    <tr>
+                        <!-- This creates one table row for the column headings. -->
+                        <th>Name</th>
+                        <!-- This column shows the name of each investment mandate. -->
+                        <th>Client</th>
+                        <!-- This column shows which client the mandate belongs to. -->
+                        <th>Type</th>
+                        <!-- This column shows the mandate type, such as growth, income, balanced, or another type defined in the model choices. -->
+                        <th>Status</th>
+                        <!-- This column shows the current workflow status of the mandate, such as draft, pending, approved, or rejected. -->
+                        <th>Benchmark</th>
+                        <!-- This column shows the benchmark linked to the mandate, which helps compare the portfolio against a reference point. -->
+                        <th>Action</th>
+                        <!-- This column provides the user action, such as opening the mandate detail page. -->
+                    </tr>
+                    <!-- This closes the header row. -->
+                </thead>
+                <!-- This closes the table header section. -->
+                <tbody>
+                    <!-- This starts the table body where the actual mandate records from the database will be displayed. -->
+                    {% for mandate in mandates %}
+                    <!-- This Django template loop goes through every mandate object passed from the view in the 'mandates' context variable. -->
+                    <!-- This connects the template to the Django view, because the view must provide the mandates queryset for this loop to work. -->
+                    <tr>
+                        <!-- This creates one table row for the current mandate in the loop. -->
+                        <td>{{ mandate.mandate_name }}</td>
+                        <!-- This displays the mandate_name field from the current InvestmentMandate model object. -->
+                        <td>{{ mandate.client }}</td>
+                        <!-- This displays the related client object for the mandate. Django will usually show the client's string representation from the model's __str__ method. -->
+                        <td>{{ mandate.get_mandate_type_display }}</td>
+                        <!-- This displays the human-readable label for the mandate_type choices field, instead of showing the raw database value. -->
+                        <!-- The get_FIELD_display pattern is provided by Django when a model field uses choices. -->
+                        <td>
+                            <!-- This table cell contains the status badge. -->
+                            <span class="badge text-bg-secondary">{{ mandate.get_status_display }}</span>
+                            <!-- This shows the human-readable status value inside a Bootstrap badge, making the workflow status easier to notice visually. -->
+                            <!-- Like mandate_type, get_status_display comes from Django model choices and converts the stored value into a readable label. -->
+                        </td>
+                        <!-- This closes the status table cell. -->
+                        <td>{{ mandate.benchmark }}</td>
+                        <!-- This displays the benchmark field from the mandate, such as an index or reference benchmark used for comparison. -->
+                        <td>
+                            <!-- This table cell contains the action link for the current mandate. -->
+                            <a href="{% url 'mandates:detail' mandate.pk %}">Open</a>
+                            <!-- This creates a link to the detail page for this specific mandate using its primary key. -->
+                            <!-- The mandate.pk value is passed into the URL so Django knows exactly which mandate record to open. -->
+                            <!-- This connects the template to a URL pattern like path('<int:pk>/', views.MandateDetailView.as_view(), name='detail'). -->
+                        </td>
+                        <!-- This closes the action table cell. -->
+                    </tr>
+                    <!-- This closes the table row for the current mandate. -->
+                    {% empty %}
+                    <!-- This Django template tag runs only if the mandates list is empty, so the user sees a helpful message instead of a blank table. -->
+                    <tr>
+                        <!-- This creates a table row for the empty-state message. -->
+                        <td colspan="6">No mandates yet.</td>
+                        <!-- This message spans all six columns, telling the user that there are currently no mandate records in the database. -->
+                    </tr>
+                    <!-- This closes the empty-state table row. -->
+                    {% endfor %}
+                    <!-- This ends the loop through the mandates queryset. -->
+                </tbody>
+                <!-- This closes the table body. -->
+            </table>
+            <!-- This closes the mandates table. -->
+        </div>
+    </div>
+</div>
+{% endblock %}

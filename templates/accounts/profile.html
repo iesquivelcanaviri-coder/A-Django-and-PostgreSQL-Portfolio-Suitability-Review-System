@@ -1,13 +1,47 @@
 {% extends 'base.html' %}
+{# This tells Django that this page uses the shared base.html layout, so it automatically gets the navbar, CSS links, Bootstrap setup, and the main page structure from the parent template. #}
 {% block title %}My Profile | SuitabilityDesk{% endblock %}
+{# This fills the title block from base.html, so the browser tab shows a specific page title instead of only the default project name. #}
 {% block content %}
-<div class="card"><div class="card-body">
-<h1>My Profile</h1>
-<p class="text-muted">Update personal and contact details. Role changes are controlled by an administrator.</p>
-<p><strong>Current role:</strong> {{ request.user.profile.get_role_display }}</p>
-<form method="post">{% csrf_token %}
-<div class="row"><div class="col-md-6">{{ user_form.as_p }}</div><div class="col-md-6">{{ profile_form.as_p }}</div></div>
-<button class="btn btn-primary" type="submit">Save Profile</button>
-</form>
-</div></div>
+{# This starts the main content section that will be inserted into the content block inside base.html. #}
+<div class="card">
+{# This Bootstrap card gives the profile page a neat boxed layout, which makes the form look more organised and professional. #}
+    <div class="card-body">
+    {# The card-body class adds spacing inside the card, so the heading, text, role, form, and button are not touching the card edges. #}
+        <h1>My Profile</h1>
+        {# This is the main page heading, showing the user that they are on their profile page. #}
+        <p class="text-muted">Update personal and contact details. Role changes are controlled by an administrator.</p>
+        {# This paragraph gives the user guidance, and text-muted is a Bootstrap class that makes the help text softer and less visually dominant. #}
+        <p><strong>Current role:</strong> {{ request.user.profile.get_role_display }}</p>
+        {# This shows the logged-in user's current role by using request.user, then accessing the related UserProfile model through profile. #}
+        {# get_role_display is a Django model method that shows the human-readable label from the role choices instead of the raw database value. #}
+        <form method="post">
+        {# This form sends the updated profile data back to the same Django view using a POST request, which is used when data is being changed or saved. #}
+            {% csrf_token %}
+            {# This adds Django's CSRF protection token, which helps stop unsafe or fake form submissions from other websites. #}
+            <div class="row">
+            {# This Bootstrap row creates a horizontal layout area so the two forms can be displayed side by side on medium and larger screens. #}
+                <div class="col-md-6">
+                {# This Bootstrap column takes half the row width on medium screens and above, making the user account form appear on the left side. #}
+                    {{ user_form.as_p }}
+                    {# This renders the Django user form fields as paragraph elements, usually for fields such as first name, last name, username, or email. #}
+                </div>
+                {# This closes the first Bootstrap column that contains the user_form. #}
+                <div class="col-md-6">
+                {# This second Bootstrap column takes the other half of the row, keeping the profile-specific form beside the user form. #}
+                    {{ profile_form.as_p }}
+                    {# This renders the profile form fields as paragraph elements, usually for extra details such as phone, organisation, job title, or role-related profile data. #}
+                </div>
+                {# This closes the second Bootstrap column that contains the profile_form. #}
+            </div>
+            {# This closes the Bootstrap row that holds both form sections. #}
+            <button class="btn btn-primary" type="submit">Save Profile</button>
+            {# This creates the submit button; btn and btn-primary are Bootstrap classes that style it as the main action button. #}
+            {# type="submit" means clicking this button sends the POST request to the Django view so the profile changes can be validated and saved. #}
+        </form>
+        {# This closes the form after all fields and the submit button have been included. #}
+    </div>
+</div>
+{# This closes the Bootstrap card container for the whole profile page. #}
 {% endblock %}
+{# This ends the content block, meaning everything above will be placed inside the matching block in base.html. #}

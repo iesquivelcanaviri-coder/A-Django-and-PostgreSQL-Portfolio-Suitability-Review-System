@@ -1,15 +1,62 @@
 {% extends 'base.html' %}
+<!-- This tells Django that this page is using base.html as the main layout, so I do not need to repeat the navbar, footer, CSS links, or general page structure here. -->
 {% block title %}SuitabilityDesk | Home{% endblock %}
+<!-- This fills the title block from base.html, so the browser tab title becomes "SuitabilityDesk | Home" for this page. -->
 {% block content %}
+<!-- This starts the main content block, which means everything below will be inserted into the content area defined inside base.html. -->
 <section class="hero p-5 rounded-4 text-white mb-4">
+<!-- This creates the main hero section at the top of the home page; the Bootstrap classes add padding, rounded corners, white text, and bottom spacing. -->
     <h1 class="display-5 fw-bold">Portfolio Suitability and Mandate Review System</h1>
+    <!-- This is the main heading shown to users; display-5 makes it large and fw-bold makes it stand out as the main page message. -->
     <p class="lead">A Django + PostgreSQL web application for managing client suitability, investment mandates, review projects, holdings and internal messages.</p>
+    <!-- This paragraph explains the purpose of the app; lead is a Bootstrap class that makes the text slightly larger and more important-looking. -->
     <a class="btn btn-info btn-lg me-2" href="{% url 'accounts:register' %}">Create Account</a>
+    <!-- This creates a Bootstrap button that sends new users to the registration page; the Django url tag connects to the accounts app register route. -->
     <a class="btn btn-outline-light btn-lg" href="{% url 'login' %}">Login</a>
+    <!-- This creates a second Bootstrap button for existing users; the url tag points to Django's login route. -->
 </section>
+<!-- This closes the hero section, so the main introduction area ends here. -->
 <div class="row g-4">
-    <div class="col-md-4"><div class="card h-100"><div class="card-body"><h3>Suitability First</h3><p>Record client risk tolerance, risk capacity, liquidity needs and review outcomes before portfolio decisions.</p></div></div></div>
-    <div class="col-md-4"><div class="card h-100"><div class="card-body"><h3>Mandate Governance</h3><p>Create and approve investment mandates with restrictions, benchmarks, ESG preferences and audit logs.</p></div></div></div>
-    <div class="col-md-4"><div class="card h-100"><div class="card-body"><h3>Database Workflow</h3><p>Store clients, projects, stakeholders, categorized holdings and inbox messages in PostgreSQL.</p></div></div></div>
+<!-- This starts a Bootstrap row for the three feature cards; g-4 adds spacing between the columns so the layout does not look crowded. -->
+    <div class="col-md-4">
+    <!-- This creates the first column; col-md-4 means it takes 4 out of 12 Bootstrap grid columns on medium screens and above, so three cards fit in one row. -->
+        <div class="card h-100">
+        <!-- This creates a Bootstrap card; h-100 makes the card stretch to the full height of the row, keeping all cards visually even. -->
+            <div class="card-body">
+            <!-- This creates the inside content area of the card where the heading and paragraph are placed. -->
+                <h3>Suitability First</h3>
+                <!-- This heading introduces the first key feature of the system, which is suitability checking before portfolio decisions. -->
+                <p>Record client risk tolerance, risk capacity, liquidity needs and review outcomes before portfolio decisions.</p>
+                <!-- This explains that the app supports the client suitability process, which connects to the clients and risk assessment database models. -->
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+    <!-- This creates the second column, again using one third of the row on medium and larger screens. -->
+        <div class="card h-100">
+        <!-- This creates the second Bootstrap card and keeps its height aligned with the other cards. -->
+            <div class="card-body">
+            <!-- This opens the content area inside the second card. -->
+                <h3>Mandate Governance</h3>
+                <!-- This heading introduces the investment mandate and approval part of the application. -->
+                <p>Create and approve investment mandates with restrictions, benchmarks, ESG preferences and audit logs.</p>
+                <!-- This explains the mandate workflow, linking the front-end page to the mandates app, approval logic, and audit trail in the database. -->
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+    <!-- This creates the third column, completing the three-card layout across the row. -->
+        <div class="card h-100">
+        <!-- This creates the third Bootstrap card, using the same styling so the page looks consistent. -->
+            <div class="card-body">
+            <!-- This opens the content area inside the third card. -->
+                <h3>Database Workflow</h3>
+                <!-- This heading highlights that the project is database-driven, which is important for the assignment requirements. -->
+                <p>Store clients, projects, stakeholders, categorized holdings and inbox messages in PostgreSQL.</p>
+                <!-- This explains the wider database connection, showing that Django models save real application data into PostgreSQL instead of just displaying static pages. -->
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
+<!-- This ends the content block, so Django knows there is no more page-specific content to insert into base.html. -->

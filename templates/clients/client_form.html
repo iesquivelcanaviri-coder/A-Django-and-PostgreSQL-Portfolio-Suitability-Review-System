@@ -1,5 +1,39 @@
 {% extends 'base.html' %}
+{# This connects this page to base.html, so it reuses the main layout, navbar, CSS links, Bootstrap setup and page structure. #}
 {% block title %}{{ title }} | SuitabilityDesk{% endblock %}
+{# This changes the browser tab title for this specific page. The variable {{ title }} comes from the Django view. #}
+{# Example: if the view sends title = "Add Client", the browser tab will show "Add Client | SuitabilityDesk". #}
 {% block content %}
-<div class="card"><div class="card-body"><h1>{{ title }}</h1><form method="post" class="needs-validation" novalidate>{% csrf_token %}{{ form.as_p }}<button class="btn btn-primary" type="submit">Save</button><a class="btn btn-outline-secondary" href="{% url 'clients:list' %}">Cancel</a></form></div></div>
+{# This starts the main content area that will be inserted into the content block inside base.html. #}
+<div class="card">
+    {# This Bootstrap card creates a clean boxed section around the form, making the page look more organised. #}
+    <div class="card-body">
+        {# card-body adds padding inside the card so the heading, form and buttons are not stuck to the edges. #}
+        <h1>{{ title }}</h1>
+        {# This displays the page heading using the title sent from the Django view. #}
+        {# This means the same template can be reused for both creating and updating a client. #}
+        <form method="post" class="needs-validation" novalidate>
+            {# This starts the HTML form that sends data back to the Django view using the POST method. #}
+            {# POST is used because the form is creating or updating data in the database. #}
+            {# needs-validation is a Bootstrap class that can be used with JavaScript validation styling. #}
+            {# novalidate disables the browser's default validation popups so custom Bootstrap/Django validation can be used instead. #}
+            {% csrf_token %}
+            {# This is Django's CSRF protection token. It helps protect the form from cross-site request forgery attacks. #}
+            {# Django requires this token in POST forms for security. Without it, the form submission may be rejected. #}
+            {{ form.as_p }}
+            {# This displays the Django form fields automatically, with each field wrapped in a paragraph tag. #}
+            {# The form object comes from the Django view, usually from a ModelForm connected to the ClientProfile model. #}
+            {# This links the template to the forms.py file and indirectly to the model/database table. #}
+            <button class="btn btn-primary" type="submit">Save</button>
+            {# This is the submit button. When clicked, it sends the form data to the Django view. #}
+            {# btn and btn-primary are Bootstrap classes that style the button with the main theme colour. #}
+            {# If the form is valid, the Django view can save the client data into PostgreSQL. #}
+            <a class="btn btn-outline-secondary" href="{% url 'clients:list' %}">Cancel</a>
+            {# This is a cancel link styled like a Bootstrap button. #}
+            {# It does not submit the form. It takes the user back to the client list page. #}
+            {# {% url 'clients:list' %} uses Django's URL naming system, so it connects to the clients app URL called list. #}
+            {# This is better than hardcoding a URL because if the URL path changes later, the template can still work. #}
+        </form>
+    </div>
+</div>
 {% endblock %}

@@ -1,2 +1,37 @@
 {% extends 'base.html' %}
-{% block content %}<div class="card"><div class="card-body"><h1>Add Categorised Holding</h1><form method="post" id="holding-form">{% csrf_token %}{{ form.as_p }}<div id="allocation-warning" class="alert alert-warning d-none">Allocation should normally remain between 0% and 100%.</div><button class="btn btn-primary">Save Holding</button></form></div></div>{% endblock %}
+{# This tells Django that this page uses the shared base.html layout, so it keeps the same navbar, styling, Bootstrap links, and general page structure used across the whole web app. #}
+{% block content %}
+{# This starts the content section that will be inserted into the matching {% block content %} area inside base.html. #}
+<div class="card">
+    {# This Bootstrap card creates a clean visual container around the form, making the page look more organised and consistent with the rest of the application. #}
+    <div class="card-body">
+        {# The card-body class adds spacing inside the card so the heading, form, warning message and button are not pushed against the edges. #}
+        <h1>Add Categorised Holding</h1>
+        {# This page heading tells the user that they are adding a new portfolio holding and linking it to a category, such as equities, bonds, ETFs or cash. #}
+        <form method="post" id="holding-form">
+            {# This form sends data back to the Django view using POST, which is normally used when creating or updating database records. #}
+            {# The id="holding-form" allows JavaScript in static/js/script.js to find this form and apply client-side validation or warning behaviour. #}
+            {% csrf_token %}
+            {# This Django security tag protects the form from CSRF attacks, which means it helps stop fake form submissions from another website. #}
+            {{ form.as_p }}
+            {# This displays the Django form fields automatically, with each field wrapped in a paragraph tag. #}
+            {# The fields come from the Django form connected to the PortfolioHolding model, so the submitted data can be saved into PostgreSQL through Django's ORM. #}
+            <div id="allocation-warning" class="alert alert-warning d-none">
+                {# This Bootstrap warning box is hidden by default because d-none means "display none". #}
+                {# JavaScript can remove d-none if the holding allocation looks unusual, such as being below 0% or above 100%. #}
+                Allocation should normally remain between 0% and 100%.
+                {# This warning helps the user understand that allocation values should stay within a realistic portfolio percentage range. #}
+            </div>
+            {# This closes the allocation warning message area. #}
+            <button class="btn btn-primary">
+                {# This creates a Bootstrap primary button, which makes the save action stand out clearly to the user. #}
+                Save Holding
+                {# This is the text shown on the button, so the user knows clicking it will save the categorised holding. #}
+            </button>
+            {# This closes the save button. #}
+        </form>
+        {# This closes the POST form after all fields, the warning message and the save button have been included. #}
+    </div>
+</div>
+
+{% endblock %}
