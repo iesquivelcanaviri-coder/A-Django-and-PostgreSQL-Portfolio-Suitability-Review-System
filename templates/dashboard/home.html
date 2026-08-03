@@ -1,193 +1,274 @@
 {% extends 'base.html' %}
-<!-- This tells Django that this page is using base.html as the main layout, so I do not need to repeat the navbar, header, footer or main page structure here. -->
+<!-- This connects the dashboard page to base.html, so the shared navbar, CSS and layout are reused. -->
 {% block title %}Dashboard | SuitabilityDesk{% endblock %}
-<!-- This replaces the title block inside base.html, so the browser tab should show "Dashboard | SuitabilityDesk" for this page. -->
+<!-- This sets the browser tab title for the dashboard page. -->
 {% block content %}
-<!-- This starts the main content block that will be inserted into the matching {% block content %} area inside base.html. -->
+<!-- This starts the main page content that will appear inside base.html. -->
 <h1 class="mb-4">Dashboard</h1>
-<!-- This is the main heading for the page, and mb-4 is a Bootstrap spacing class that adds margin below the heading. -->
+<!-- This is the main dashboard heading. -->
 <div class="row g-3 mb-4">
-<!-- This starts a Bootstrap row for the dashboard summary cards, where g-3 adds spacing between columns and mb-4 adds margin below the row. -->
+    <!-- This row holds the four top dashboard summary cards. -->
     <div class="col-md-3">
-    <!-- This creates one Bootstrap column that takes 3 out of 12 grid spaces on medium screens, so four cards can fit across the row. -->
+        <!-- This column holds the client count card. -->
         <div class="stat-card">
-        <!-- This custom stat-card class is likely styled in style.css and is used to make the dashboard number box look like a card. -->
+            <!-- This card displays one important dashboard number. -->
             <span>Clients</span>
-            <!-- This label tells the user that the number below represents the total number of client records. -->
+            <!-- This label explains that the number below is the number of clients. -->
             <strong>{{ client_count }}</strong>
-            <!-- This displays the client_count value passed from the Django view through the template context. -->
+            <!-- This value comes from dashboard/views.py through the context dictionary. -->
         </div>
-        <!-- This closes the Clients stat-card. -->
+        <!-- This closes the Clients card. -->
     </div>
-    <!-- This closes the Clients Bootstrap column. -->
+    <!-- This closes the Clients column. -->
     <div class="col-md-3">
-    <!-- This creates the second dashboard column for the mandates count. -->
+        <!-- This column holds the mandate count card. -->
         <div class="stat-card">
-        <!-- This opens another custom statistic card for showing a key dashboard number. -->
+            <!-- This card displays the number of investment mandates. -->
             <span>Mandates</span>
-            <!-- This label explains that the number below is linked to investment mandates stored in the database. -->
+            <!-- This label explains that the number below is the number of mandates. -->
             <strong>{{ mandate_count }}</strong>
-            <!-- This displays the mandate_count value that should be calculated in the Django dashboard view. -->
+            <!-- This value comes from the mandate_count variable in the Django view. -->
         </div>
-        <!-- This closes the Mandates stat-card. -->
+        <!-- This closes the Mandates card. -->
     </div>
-    <!-- This closes the Mandates Bootstrap column. -->
+    <!-- This closes the Mandates column. -->
     <div class="col-md-3">
-    <!-- This creates the third dashboard column for open portfolio review projects. -->
+        <!-- This column holds the open projects count card. -->
         <div class="stat-card">
-        <!-- This opens the custom statistic card for project information. -->
+            <!-- This card displays the number of open portfolio review projects. -->
             <span>Open Projects</span>
-            <!-- This label tells the user that the number relates to active or open portfolio review projects. -->
+            <!-- This label explains that the number below is for open projects. -->
             <strong>{{ project_count }}</strong>
-            <!-- This displays the project_count value from the Django view, usually based on a database query. -->
+            <!-- This value comes from the project_count variable in dashboard/views.py. -->
         </div>
-        <!-- This closes the Open Projects stat-card. -->
+        <!-- This closes the Open Projects card. -->
     </div>
-    <!-- This closes the Open Projects Bootstrap column. -->
+    <!-- This closes the Open Projects column. -->
     <div class="col-md-3">
-    <!-- This creates the fourth dashboard column for unread messages. -->
+        <!-- This column holds the unread message count card. -->
         <div class="stat-card">
-        <!-- This opens the custom statistic card for the message count. -->
+            <!-- This card displays the number of unread messages for the logged-in user. -->
             <span>Unread Messages</span>
-            <!-- This label explains that the number below is the count of messages the logged-in user has not read yet. -->
+            <!-- This label explains that the number below is unread messages. -->
             <strong>{{ unread_count }}</strong>
-            <!-- This displays the unread_count value passed from the Django view, connecting the dashboard to the messaging app. -->
+            <!-- This value comes from the unread_count variable in the dashboard view. -->
         </div>
-        <!-- This closes the Unread Messages stat-card. -->
+        <!-- This closes the Unread Messages card. -->
     </div>
-    <!-- This closes the Unread Messages Bootstrap column. -->
+    <!-- This closes the Unread Messages column. -->
 </div>
-<!-- This closes the first Bootstrap row containing the four summary statistic cards. -->
+<!-- This closes the top dashboard summary cards row. -->
+<div class="card mb-4">
+    <!-- This new card shows market information from Yahoo Finance on the dashboard. -->
+    <div class="card-body">
+        <!-- This gives spacing inside the market snapshot card. -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <!-- This puts the heading on the left and the badge on the right. -->
+            <div>
+                <!-- This groups the title and description together. -->
+                <h2 class="mb-1">Latest Market Snapshot</h2>
+                <!-- This heading introduces the market data section. -->
+                <p class="text-muted mb-0">
+                    Latest market information for educational portfolio review purposes only.
+                </p>
+                <!-- This explains that the market data is educational and not investment advice. -->
+            </div>
+            <!-- This closes the title and description group. -->
+            <span class="badge text-bg-secondary">Updates on page reload</span>
+            <!-- This badge tells the user that the data updates when the dashboard page reloads. -->
+        </div>
+        <!-- This closes the market snapshot heading row. -->
+        <div class="table-responsive">
+            <!-- This makes the table easier to view on smaller screens. -->
+            <table class="table align-middle">
+                <!-- This table displays the market_rows data sent from dashboard/views.py. -->
+                <thead>
+                    <!-- This starts the table header. -->
+                    <tr>
+                        <!-- This creates the header row. -->
+                        <th>Ticker</th>
+                        <!-- This column shows the stock or ETF ticker symbol. -->
+                        <th>Last Price</th>
+                        <!-- This column shows the latest available price. -->
+                        <th>Previous Close</th>
+                        <!-- This column shows the previous closing price. -->
+                        <th>Change</th>
+                        <!-- This column shows the price change. -->
+                        <th>Change %</th>
+                        <!-- This column shows the percentage change. -->
+                    </tr>
+                    <!-- This closes the table header row. -->
+                </thead>
+                <!-- This closes the table header. -->
+                <tbody>
+                    <!-- This starts the table body where Django loops through market_rows. -->
+                    {% for row in market_rows %}
+                    <!-- This loop displays each market item returned by get_market_snapshot in dashboard/market_data.py. -->
+                    <tr>
+                        <!-- This creates one row for one ticker. -->
+                        <td><strong>{{ row.ticker }}</strong></td>
+                        <!-- This displays the ticker symbol, for example MSFT or AAPL. -->
+                        <td>{{ row.last_price }}</td>
+                        <!-- This displays the latest price. -->
+                        <td>{{ row.previous_close }}</td>
+                        <!-- This displays the previous close price. -->
+                        <td>{{ row.change }}</td>
+                        <!-- This displays the price change. -->
+                        <td>{{ row.change_percent }}%</td>
+                        <!-- This displays the percentage change. -->
+                    </tr>
+                    <!-- This closes one market data row. -->
+                    {% empty %}
+                    <!-- This runs if market_rows is empty or unavailable. -->
+                    <tr>
+                        <!-- This creates a fallback row. -->
+                        <td colspan="5">Market data is currently unavailable.</td>
+                        <!-- This message appears if Yahoo Finance data cannot be displayed. -->
+                    </tr>
+                    <!-- This closes the fallback row. -->
+                    {% endfor %}
+                    <!-- This ends the Django loop for market_rows. -->
+                </tbody>
+                <!-- This closes the table body. -->
+            </table>
+            <!-- This closes the market snapshot table. -->
+        </div>
+        <!-- This closes the responsive table wrapper. -->
+        <p class="small text-muted mb-0">
+            This application does not provide investment advice or execute trades.
+        </p>
+        <!-- This disclaimer keeps the finance feature suitable for an educational project. -->
+    </div>
+    <!-- This closes the market snapshot card body. -->
+</div>
+<!-- This closes the market snapshot card. -->
 <div class="row g-4">
-<!-- This starts a new Bootstrap row for the two larger dashboard sections below the summary cards. -->
+    <!-- This row holds the two lower dashboard tables. -->
     <div class="col-lg-6">
-    <!-- This creates a column that takes half the width on large screens, so the projects table can sit beside the assessments table. -->
+        <!-- This column holds the Recent Review Projects table. -->
         <div class="card">
-        <!-- This starts a Bootstrap card component, which gives the section a clean boxed layout. -->
+            <!-- This Bootstrap card wraps the recent projects table. -->
             <div class="card-body">
-            <!-- This adds Bootstrap card body spacing around the table content. -->
+                <!-- This adds spacing inside the card. -->
                 <h2>Recent Review Projects</h2>
-                <!-- This heading introduces the table showing recent portfolio review projects. -->
+                <!-- This heading introduces the recent review projects section. -->
                 <div class="table-responsive">
-                <!-- This Bootstrap wrapper makes the table scroll horizontally on smaller screens, which helps mobile responsiveness. -->
+                    <!-- This makes the table responsive on smaller screens. -->
                     <table class="table">
-                    <!-- This creates a Bootstrap-styled table for displaying database records in rows and columns. -->
+                        <!-- This table displays recent portfolio review projects. -->
                         <thead>
-                        <!-- This starts the table header section. -->
+                            <!-- This starts the table header. -->
                             <tr>
-                            <!-- This creates the header row of the table. -->
+                                <!-- This creates the table header row. -->
                                 <th>Project</th>
-                                <!-- This column heading is for the project name. -->
+                                <!-- This column shows the project name. -->
                                 <th>Client</th>
-                                <!-- This column heading is for the client connected to the project. -->
+                                <!-- This column shows the client linked to the project. -->
                                 <th>Status</th>
-                                <!-- This column heading is for the current project status. -->
+                                <!-- This column shows the project status. -->
                             </tr>
                             <!-- This closes the table header row. -->
                         </thead>
-                        <!-- This closes the table header section. -->
+                        <!-- This closes the table header. -->
                         <tbody>
-                        <!-- This starts the table body where Django will loop through project records. -->
+                            <!-- This starts the table body. -->
                             {% for p in projects %}
-                            <!-- This Django template loop goes through each project object in the projects list passed from the view. -->
+                            <!-- This loop displays each project passed from the Django dashboard view. -->
                             <tr>
-                            <!-- This creates one table row for the current project in the loop. -->
+                                <!-- This starts one project row. -->
                                 <td>{{ p.project_name }}</td>
-                                <!-- This displays the project_name field from the current PortfolioReviewProject object. -->
+                                <!-- This displays the project name. -->
                                 <td>{{ p.client }}</td>
-                                <!-- This displays the client linked to the project, using the model's string representation if it is a related object. -->
+                                <!-- This displays the client linked to the project. -->
                                 <td>
-                                <!-- This starts the status cell for the current project. -->
+                                    <!-- This starts the status cell. -->
                                     <span class="badge text-bg-primary">{{ p.get_status_display }}</span>
-                                    <!-- This displays the human-readable version of the status choice field and styles it as a Bootstrap badge. -->
+                                    <!-- This displays the readable project status using the model choices. -->
                                 </td>
                                 <!-- This closes the status cell. -->
                             </tr>
-                            <!-- This closes the table row for one project. -->
+                            <!-- This closes one project row. -->
                             {% empty %}
-                            <!-- This runs only if the projects list is empty, which avoids showing a blank table. -->
+                            <!-- This runs if there are no projects yet. -->
                             <tr>
-                            <!-- This creates a fallback row when there are no project records yet. -->
+                                <!-- This creates the empty table row. -->
                                 <td colspan="3">No projects yet.</td>
-                                <!-- This message spans all three columns and tells the user there are no projects in the database yet. -->
+                                <!-- This tells the user there are no projects in the database yet. -->
                             </tr>
-                            <!-- This closes the empty-state table row. -->
+                            <!-- This closes the empty row. -->
                             {% endfor %}
-                            <!-- This ends the Django for loop for recent review projects. -->
+                            <!-- This ends the project loop. -->
                         </tbody>
                         <!-- This closes the table body. -->
                     </table>
-                    <!-- This closes the projects table. -->
+                    <!-- This closes the recent projects table. -->
                 </div>
                 <!-- This closes the responsive table wrapper. -->
             </div>
-            <!-- This closes the card body for the recent projects section. -->
+            <!-- This closes the card body. -->
         </div>
-        <!-- This closes the Bootstrap card for recent review projects. -->
+        <!-- This closes the recent projects card. -->
     </div>
-    <!-- This closes the left Bootstrap column. -->
+    <!-- This closes the left column. -->
     <div class="col-lg-6">
-    <!-- This creates the second half-width column on large screens for suitability assessments. -->
+        <!-- This column holds the Latest Suitability Assessments table. -->
         <div class="card">
-        <!-- This starts another Bootstrap card for the latest risk and suitability assessment records. -->
+            <!-- This Bootstrap card wraps the suitability assessments table. -->
             <div class="card-body">
-            <!-- This adds spacing inside the card using Bootstrap's card-body class. -->
+                <!-- This adds spacing inside the card. -->
                 <h2>Latest Suitability Assessments</h2>
-                <!-- This heading introduces the table showing the most recent suitability assessment results. -->
+                <!-- This heading introduces the latest suitability assessments section. -->
                 <div class="table-responsive">
-                <!-- This keeps the table usable on small screens by allowing horizontal scrolling if needed. -->
+                    <!-- This makes the assessment table responsive on smaller screens. -->
                     <table class="table">
-                    <!-- This creates a Bootstrap-styled table for suitability assessment data. -->
+                        <!-- This table displays latest risk assessment records. -->
                         <thead>
-                        <!-- This starts the table header area. -->
+                            <!-- This starts the table header. -->
                             <tr>
-                            <!-- This creates the header row for the assessment table. -->
+                                <!-- This creates the table header row. -->
                                 <th>Client</th>
-                                <!-- This column heading is for the client connected to the risk assessment. -->
+                                <!-- This column shows the client. -->
                                 <th>Score</th>
-                                <!-- This column heading is for the assessment score calculated or stored in the model. -->
+                                <!-- This column shows the assessment score. -->
                                 <th>Outcome</th>
-                                <!-- This column heading is for the suitability outcome, such as low, medium or high suitability. -->
+                                <!-- This column shows the suitability outcome. -->
                             </tr>
-                            <!-- This closes the assessment table header row. -->
+                            <!-- This closes the table header row. -->
                         </thead>
-                        <!-- This closes the table header section. -->
+                        <!-- This closes the table header. -->
                         <tbody>
-                        <!-- This starts the table body where the assessment records will be displayed. -->
+                            <!-- This starts the table body. -->
                             {% for r in risk_assessments %}
-                            <!-- This Django loop goes through each risk assessment object passed from the dashboard view. -->
+                            <!-- This loop displays each risk assessment passed from the Django view. -->
                             <tr>
-                            <!-- This creates one table row for the current risk assessment. -->
+                                <!-- This starts one risk assessment row. -->
                                 <td>{{ r.client }}</td>
-                                <!-- This displays the client linked to the current risk assessment record. -->
+                                <!-- This displays the client linked to the assessment. -->
                                 <td>{{ r.assessment_score }}</td>
-                                <!-- This displays the numerical suitability or risk assessment score from the database. -->
+                                <!-- This displays the risk or suitability score. -->
                                 <td>{{ r.get_outcome_display }}</td>
-                                <!-- This displays the readable label for the outcome choice field instead of the raw database value. -->
+                                <!-- This displays the readable outcome label from the model choices. -->
                             </tr>
-                            <!-- This closes the table row for one assessment. -->
+                            <!-- This closes one risk assessment row. -->
                             {% empty %}
-                            <!-- This runs only if there are no risk assessment records to show. -->
+                            <!-- This runs if there are no assessments yet. -->
                             <tr>
-                            <!-- This creates a fallback table row for the empty state. -->
+                                <!-- This creates the empty table row. -->
                                 <td colspan="3">No assessments yet.</td>
-                                <!-- This message spans all three columns and explains that no suitability assessments have been created yet. -->
+                                <!-- This tells the user there are no assessments in the database yet. -->
                             </tr>
-                            <!-- This closes the empty-state table row. -->
+                            <!-- This closes the empty row. -->
                             {% endfor %}
-                            <!-- This ends the Django for loop for risk assessments. -->
+                            <!-- This ends the risk assessment loop. -->
                         </tbody>
                         <!-- This closes the table body. -->
                     </table>
                     <!-- This closes the suitability assessments table. -->
                 </div>
-                <!-- This closes the responsive table wrapper for the assessments table. -->
+                <!-- This closes the responsive table wrapper. -->
             </div>
-            <!-- This closes the card body for the suitability assessments section. -->
         </div>
-        <!-- This closes the Bootstrap card for latest suitability assessments. -->
     </div>
-    <!-- This closes the right Bootstrap column. -->
 </div>
-<!-- This closes the second Bootstrap row containing the two dashboard tables. -->
+
 {% endblock %}

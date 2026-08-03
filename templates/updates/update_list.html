@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}News & Updates | SuitabilityDesk{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1>News & Updates</h1>
+        <p class="text-muted">
+            Share policy tips, portfolio risk notes, stock observations and finance news links.
+        </p>
+    </div>
+
+    <a class="btn btn-primary" href="{% url 'updates:create' %}">
+        New Update
+    </a>
+</div>
+
+<div class="row g-4">
+    {% for post in posts %}
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <span class="badge text-bg-secondary mb-2">
+                    {{ post.get_category_display }}
+                </span>
+
+                <h2 class="h4">{{ post.title }}</h2>
+
+                <p class="text-muted small">
+                    Posted by {{ post.created_by.username }} on {{ post.created_at|date:"d M Y H:i" }}
+                </p>
+
+                <p>{{ post.content }}</p>
+
+                {% if post.source_link %}
+                <a href="{{ post.source_link }}" target="_blank" rel="noopener noreferrer">
+                    View source
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info">
+            No updates have been posted yet.
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<p class="small text-muted mt-4">
+    Posts are for educational discussion only and should not be treated as financial advice.
+</p>
+{% endblock %}

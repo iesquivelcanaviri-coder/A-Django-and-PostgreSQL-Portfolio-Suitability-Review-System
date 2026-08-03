@@ -74,3 +74,6 @@ whitenoise>=6.7.0
 # The real .env file must not be uploaded to GitHub because it may
 # contain private credentials. A safe .env.example file can be included to show which variables are required.
 python-dotenv>=1.0.1
+
+
+yfinance

@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     # Custom app for inbox, sent messages, read messages and archived messages.
     "dashboard",
     # Custom app for the homepage and dashboard summary pages.
+    "updates",
 ]
 
 MIDDLEWARE = [

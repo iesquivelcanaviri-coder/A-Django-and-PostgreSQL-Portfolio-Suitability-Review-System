@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}New Update | SuitabilityDesk{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <h1>Post News or Update</h1>
+
+                <p class="text-muted">
+                    Add a policy tip, stock note, risk observation or finance news link for other users to read.
+                </p>
+
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+
+                    <button class="btn btn-primary" type="submit">
+                        Publish Update
+                    </button>
+
+                    <a class="btn btn-outline-secondary" href="{% url 'updates:list' %}">
+                        Cancel
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

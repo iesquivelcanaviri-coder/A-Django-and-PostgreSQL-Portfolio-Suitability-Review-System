@@ -11,6 +11,7 @@ from django.urls import include, path
 from dashboard import views as dashboard_views
 # This imports the views.py file from the dashboard app and gives it the shorter name dashboard_views.
 # This is useful because the public home page is connected directly from the main project URL file.
+from django.urls import include, path
 
 urlpatterns = [
 # urlpatterns is the list Django reads when deciding what page to show for a requested URL.
@@ -42,6 +43,7 @@ urlpatterns = [
     path("messages/", include("messaging.urls")),
     # This sends all URLs starting with /messages/ to the messaging app.
     # The messaging app handles inbox, sent messages, read messages and archived messages.
+    path("updates/", include("updates.urls")),
 ]
 
 # Overall, this file connects the whole Django project together by linking the main website routes to each individual app.
