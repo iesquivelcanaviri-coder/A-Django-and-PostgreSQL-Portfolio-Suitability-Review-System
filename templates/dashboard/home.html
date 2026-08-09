@@ -88,12 +88,11 @@
                         <!-- This creates the header row. -->
                         <th>Ticker</th>
                         <!-- This column shows the stock or ETF ticker symbol. -->
+                        <th>Current Price</th>
                         <th>Last Price</th>
                         <!-- This column shows the latest available price. -->
-                        <th>Previous Close</th>
-                        <!-- This column shows the previous closing price. -->
-                        <th>Change</th>
-                        <!-- This column shows the price change. -->
+                        <th>Previous Trading Day Close</th>
+                        <!-- This column shows the previous closing price. -->                   
                         <th>Change %</th>
                         <!-- This column shows the percentage change. -->
                     </tr>
@@ -101,33 +100,26 @@
                 </thead>
                 <!-- This closes the table header. -->
                 <tbody>
-                    <!-- This starts the table body where Django loops through market_rows. -->
                     {% for row in market_rows %}
-                    <!-- This loop displays each market item returned by get_market_snapshot in dashboard/market_data.py. -->
                     <tr>
-                        <!-- This creates one row for one ticker. -->
                         <td><strong>{{ row.ticker }}</strong></td>
-                        <!-- This displays the ticker symbol, for example MSFT or AAPL. -->
+                        <td>{{ row.current_price }}</td>
                         <td>{{ row.last_price }}</td>
-                        <!-- This displays the latest price. -->
-                        <td>{{ row.previous_close }}</td>
-                        <!-- This displays the previous close price. -->
-                        <td>{{ row.change }}</td>
-                        <!-- This displays the price change. -->
-                        <td>{{ row.change_percent }}%</td>
-                        <!-- This displays the percentage change. -->
+                        <td>{{ row.previous_trading_day_close }}</td>
+
+                        <td>
+                            {% if row.change_percent == "Unavailable" or row.change_percent == "N/A" %}
+                                {{ row.change_percent }}
+                            {% else %}
+                                {{ row.change_percent }}%
+                            {% endif %}
+                        </td>
                     </tr>
-                    <!-- This closes one market data row. -->
                     {% empty %}
-                    <!-- This runs if market_rows is empty or unavailable. -->
                     <tr>
-                        <!-- This creates a fallback row. -->
                         <td colspan="5">Market data is currently unavailable.</td>
-                        <!-- This message appears if Yahoo Finance data cannot be displayed. -->
                     </tr>
-                    <!-- This closes the fallback row. -->
                     {% endfor %}
-                    <!-- This ends the Django loop for market_rows. -->
                 </tbody>
                 <!-- This closes the table body. -->
             </table>

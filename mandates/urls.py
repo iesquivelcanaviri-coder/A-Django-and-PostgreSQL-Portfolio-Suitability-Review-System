@@ -22,6 +22,18 @@ urlpatterns = [
     # The final URL will usually be /mandates/new/.
     # It calls mandate_create from views.py, which should show a form and save a new mandate when submitted.
     # The name="create" lets me link to this page using {% url 'mandates:create' %}.
+    path("projects/", views.project_list, name="projects"),
+    # This route displays the portfolio review projects page.
+    # The final URL will usually be /mandates/projects/.
+    # It calls project_list from views.py, which should show review projects stored in the database.
+    # This connects directly to the assignment requirement for storing project details such as name, dates, status and stakeholders.
+    # The name="projects" lets me link to this page using {% url 'mandates:projects' %}.
+    path("projects/new/", views.project_create, name="project_create"),
+    # This route opens the form for creating a new portfolio review project.
+    # The final URL will usually be /mandates/projects/new/.
+    # It calls project_create from views.py, which should save a new review project to PostgreSQL.
+    # This supports the project-management part of the application because users can create structured review projects.
+    # The name="project_create" lets me link to this page using {% url 'mandates:project_create' %}.
     path("<int:pk>/", views.mandate_detail, name="detail"),
     # This route opens the detail page for one specific mandate.
     # <int:pk> means Django expects an integer primary key from the database.
@@ -54,17 +66,6 @@ urlpatterns = [
     # It calls holding_delete from views.py, which should normally confirm the delete action before removing the record.
     # This is part of CRUD because it demonstrates the Delete operation.
     # The name="holding_delete" lets me create delete links using {% url 'mandates:holding_delete' holding.pk %}.
-    path("projects/", views.project_list, name="projects"),
-    # This route displays the portfolio review projects page.
-    # The final URL will usually be /mandates/projects/.
-    # It calls project_list from views.py, which should show review projects stored in the database.
-    # This connects directly to the assignment requirement for storing project details such as name, dates, status and stakeholders.
-    # The name="projects" lets me link to this page using {% url 'mandates:projects' %}.
-    path("projects/new/", views.project_create, name="project_create"),
-    # This route opens the form for creating a new portfolio review project.
-    # The final URL will usually be /mandates/projects/new/.
-    # It calls project_create from views.py, which should save a new review project to PostgreSQL.
-    # This supports the project-management part of the application because users can create structured review projects.
-    # The name="project_create" lets me link to this page using {% url 'mandates:project_create' %}.
+
 ]
 # After this, Django has all the route-to-view connections for the mandates app.
