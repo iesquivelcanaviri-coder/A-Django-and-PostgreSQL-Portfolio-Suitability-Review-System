@@ -170,23 +170,25 @@ LOGIN_REDIRECT_URL = "dashboard:home"
 LOGOUT_REDIRECT_URL = "login"
 # After logout, Django redirects the user back to the login page.
 
-EMAIL_BACKEND = os.environ.get("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
-# EMAIL_BACKEND controls how Django sends emails.
-# The console backend prints emails to the terminal/logs, which is useful for testing password reset without a real email account.
+EMAIL_BACKEND = os.environ.get(
+    "EMAIL_BACKEND",
+    "django.core.mail.backends.console.EmailBackend"
+)
+
 EMAIL_HOST = os.environ.get("EMAIL_HOST", "smtp.gmail.com")
-# EMAIL_HOST is the SMTP server used if real email sending is configured later.
+
 EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))
-# EMAIL_PORT is the mail server port.
-# Port 587 is commonly used for TLS email sending.
+
 EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "True").lower() in {"true", "1", "yes"}
-# EMAIL_USE_TLS controls whether email sending uses TLS encryption.
+
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
-# EMAIL_HOST_USER stores the email username if real SMTP email is used later.
+
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
-# EMAIL_HOST_PASSWORD stores the email password or app password if real SMTP email is used.
-# This must never be hardcoded or pushed to GitHub.
-DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "noreply@suitabilitydesk.local")
-# DEFAULT_FROM_EMAIL is the sender address Django uses for password reset emails and system messages.
+
+DEFAULT_FROM_EMAIL = os.environ.get(
+    "DEFAULT_FROM_EMAIL",
+    "noreply@suitabilitydesk.local"
+)
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 # This tells Django to trust Render's proxy header when the original request was HTTPS.
