@@ -1,44 +1,91 @@
-from django.contrib.auth.views import PasswordResetCompleteView, PasswordResetConfirmView
-# These are Django's built-in views for setting a new password after a reset link has been generated.
+from django.contrib.auth.forms import PasswordResetForm
+# This imports Django's built-in password reset form.
 
-from django.urls import path, reverse_lazy
-# path connects URLs to views, and reverse_lazy helps redirect after the password reset is complete.
+from django.contrib.auth.tokens import default_token_generator
+# This imports Django's secure password reset token generator.
 
-from . import views
-# This imports the custom views from accounts/views.py.
+from django.shortcuts import redirect, render
+# render displays templates, and redirect sends the user to another page.
 
-app_name = "accounts"
-# This gives the accounts app a namespace, so URLs can be referred to as accounts:profile, accounts:register, etc.
+from django.urls import reverse
+# reverse builds URLs from Django route names.
 
-urlpatterns = [
-    path("register/", views.register, name="register"),
-    # This route displays and processes the user registration form.
+from django.utils.encoding import force_bytes
+# force_bytes converts the user ID into bytes before encoding it safely.
 
-    path("profile/", views.profile, name="profile"),
-    # This route displays and updates the logged-in user's profile.
+from django.utils.http import urlsafe_base64_encode
+# urlsafe_base64_encode creates the encoded user ID used inside the reset URL.
 
-    path("password_reset/", views.demo_password_reset, name="password_reset"),
-    # This route displays the password reset form and creates a secure reset link for the academic Render demo.
 
-    path("password_reset/done/", views.demo_password_reset_done, name="password_reset_done"),
-    # This route displays the generated reset link after the user submits their email address.
 
-    path(
-        "reset/<uidb64>/<token>/",
-        PasswordResetConfirmView.as_view(
-            template_name="registration/password_reset_confirm.html",
-            success_url=reverse_lazy("accounts:password_reset_complete"),
-        ),
-        name="password_reset_confirm",
-    ),
-    # This route lets the user choose a new password after opening the secure reset link.
+def demo_password_reset(request):
+    # This view creates a secure password reset link without using Gmail SMTP.
+    # It is used for the Render academic deployment so the password reset workflow works reliably.
 
-    path(
-        "reset/done/",
-        PasswordResetCompleteView.as_view(
-            template_name="registration/password_reset_complete.html"
-        ),
-        name="password_reset_complete",
-    ),
-    # This route confirms that the password reset has been completed.
-]
+    reset_link = None
+    # This variable will store the generated reset link if a matching user is found.
+
+    if request.method == "POST":
+        # This checks whether the user submitted the password reset form.
+
+        form = PasswordResetForm(request.POST)
+        # This uses Django's built-in password reset form to validate the submitted email address.
+
+        if form.is_valid():
+            # This checks whether the email field is valid.
+
+            email = form.cleaned_data["email"]
+            # This gets the email address entered by the user.
+
+            users = form.get_users(email)
+            # This finds active users with this email address and a usable password.
+            # This keeps Django's normal password reset user-checking behaviour.
+
+            for user in users:
+                # This loops through matching users. Usually there should only be one.
+
+                uid = urlsafe_base64_encode(force_bytes(user.pk))
+                # This safely encodes the user's database ID for the reset URL.
+
+                token = default_token_generator.make_token(user)
+                # This creates Django's secure password reset token.
+
+                reset_link = request.build_absolute_uri(
+                    reverse(
+                        "accounts:password_reset_confirm",
+                        kwargs={"uidb64": uid, "token": token},
+                    )
+                )
+                # This builds the full Render URL for the password reset confirmation page.
+
+                break
+                # This stops after the first matching user.
+
+            request.session["demo_password_reset_link"] = reset_link
+            # This stores the generated link temporarily in the user's session.
+
+            return redirect("accounts:password_reset_done")
+            # This sends the user to the done page where the link can be displayed.
+
+    else:
+        # This runs when the user first opens the password reset page.
+
+        form = PasswordResetForm()
+        # This creates an empty password reset form.
+
+    return render(request, "registration/password_reset_form.html", {"form": form})
+    # This displays the password reset form template.
+
+
+def demo_password_reset_done(request):
+    # This view shows the generated password reset link for the academic Render demo.
+
+    reset_link = request.session.get("demo_password_reset_link")
+    # This retrieves the reset link from the user's session.
+
+    return render(
+        request,
+        "registration/password_reset_done.html",
+        {"reset_link": reset_link},
+    )
+    # This sends the reset link to the template so it can be displayed on the page.
