@@ -77,3 +77,5 @@ python-dotenv>=1.0.1
 
 
 yfinance
+
+pip freeze > requirements.txt
