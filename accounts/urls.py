@@ -1,23 +1,26 @@
 from django.urls import path
-# This imports Django's path function so this app can define its own URL routes.
+# This imports Django's path function, which is used to connect a URL route to a view function.
 
 from . import views
-# This imports the views.py file from the accounts app.
+# This imports the views.py file from the current accounts app.
+# The dot means "from this same app folder", so Django can find the register and profile views.
 
 app_name = "accounts"
-# This gives the accounts app a namespace, so templates can use names such as accounts:register and accounts:profile.
+# This gives the accounts app its own namespace.
+# For example, templates can link to the register page using {% url 'accounts:register' %}.
 
 urlpatterns = [
+    # This list stores the custom URL routes for the accounts app.
+
     path("register/", views.register, name="register"),
     # This route opens the registration page.
+    # Full URL: /accounts/register/
+    # It uses the custom register view from accounts/views.py.
 
     path("profile/", views.profile, name="profile"),
     # This route opens the logged-in user's profile page.
-
-    path("password_reset/", views.demo_password_reset, name="password_reset"),
-    # This route replaces Django's normal password reset form with the academic demo version.
-    # It creates a secure reset link without relying on Gmail SMTP.
-
-    path("password_reset/done/", views.demo_password_reset_done, name="password_reset_done"),
-    # This route shows the generated reset link after the user submits their email.
+    # Full URL: /accounts/profile/
+    # It uses the custom profile view from accounts/views.py.
 ]
+# Password reset, login, logout and password change are handled by Django's built-in auth URLs.
+# Those are included in the main suitabilitydesk/urls.py file using include("django.contrib.auth.urls").
