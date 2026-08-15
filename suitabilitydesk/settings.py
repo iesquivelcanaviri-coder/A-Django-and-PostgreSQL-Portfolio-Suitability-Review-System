@@ -175,32 +175,17 @@ EMAIL_BACKEND = os.environ.get(
     "EMAIL_BACKEND",
     "django.core.mail.backends.console.EmailBackend"
 )
-# EMAIL_BACKEND controls how Django handles password reset emails.
-# For this academic Render deployment, the console backend avoids Gmail SMTP crashes.
 
 EMAIL_HOST = os.environ.get("EMAIL_HOST", "smtp.gmail.com")
-# EMAIL_HOST is only used if SMTP email is enabled.
-
 EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))
-# EMAIL_PORT is only used if SMTP email is enabled.
-
 EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "True").lower() in {"true", "1", "yes"}
-# EMAIL_USE_TLS is only used if SMTP email is enabled.
-
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
-# EMAIL_HOST_USER is only used if SMTP email is enabled.
-
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
-# EMAIL_HOST_PASSWORD is only used if SMTP email is enabled.
-
 DEFAULT_FROM_EMAIL = os.environ.get(
     "DEFAULT_FROM_EMAIL",
     "noreply@suitabilitydesk.local"
 )
-# DEFAULT_FROM_EMAIL is the sender address Django uses for password reset emails.
-
 EMAIL_TIMEOUT = int(os.environ.get("EMAIL_TIMEOUT", "20"))
-# EMAIL_TIMEOUT prevents Render from waiting too long if an SMTP server does not respond.
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 # This tells Django to trust Render's HTTPS proxy header.
