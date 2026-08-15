@@ -1,17 +1,12 @@
 """Models for user role and personal contact details."""
-
 from django.conf import settings
 # This imports the Django settings, which lets this model safely refer to the active user model used by the whole project.
-
 from django.db import models
 # This imports Django's model tools, which are used to create database tables by writing Python classes instead of raw SQL.
-
 from django.db.models.signals import post_save
 # This imports Django's post_save signal, which can run code automatically after a user is created or updated.
-
 from django.dispatch import receiver
 # This imports receiver, which connects a signal to a function.
-
 
 class UserProfile(models.Model):
     # This creates a Django model called UserProfile.

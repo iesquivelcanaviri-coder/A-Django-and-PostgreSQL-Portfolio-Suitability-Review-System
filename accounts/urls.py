@@ -1,19 +1,20 @@
 from django.contrib.auth.views import PasswordResetCompleteView, PasswordResetConfirmView
-# This imports Django's built-in views for the final two steps of the password reset workflow.
-# PasswordResetConfirmView lets the user enter a new password after clicking the reset link.
-# PasswordResetCompleteView shows the final success page after the password has been changed.
+# This imports Django's built-in password reset views for the final stages of the reset workflow.
+# PasswordResetConfirmView lets the user enter a new password after opening the generated reset link.
+# PasswordResetCompleteView shows the success page after the password has been changed.
 
 from django.urls import path, reverse_lazy
-# path is used to create URL routes.
-# reverse_lazy is used to safely refer to a named URL before Django has fully loaded all URL patterns.
+# path is used to define URL routes.
+# reverse_lazy is used to safely point to another named URL before Django has finished loading all URL patterns.
 
 from . import views
 # This imports the views.py file from the current accounts app.
-# The dot means "from this same app", so Django will look inside accounts/views.py.
+# The dot means "from this same app", so Django looks inside accounts/views.py.
+
 
 app_name = "accounts"
-# This gives all URLs in this file the accounts namespace.
-# For example, templates can use {% url 'accounts:profile' %} or {% url 'accounts:password_reset' %}.
+# This gives the accounts app its own URL namespace.
+# For example, templates can use {% url 'accounts:register' %}, {% url 'accounts:profile' %}, or {% url 'accounts:password_reset' %}.
 
 
 urlpatterns = [
@@ -32,11 +33,13 @@ urlpatterns = [
     path("password_reset/", views.demo_password_reset, name="password_reset"),
     # This route shows the password reset request form.
     # Full URL: /accounts/password_reset/
-    # This uses the custom academic demo view instead of Gmail SMTP.
+    # This uses the custom academic demo view instead of relying on Gmail SMTP.
+    # This is safer for Render because Gmail SMTP was causing the Gunicorn worker to crash.
 
     path("password_reset/done/", views.demo_password_reset_done, name="password_reset_done"),
-    # This route shows the generated reset link after the user submits their email.
+    # This route shows the password reset result page.
     # Full URL: /accounts/password_reset/done/
+    # In the academic Render demo, this page can display the secure reset link directly.
 
     path(
         "reset/<uidb64>/<token>/",
@@ -47,9 +50,9 @@ urlpatterns = [
         name="password_reset_confirm",
     ),
     # This route lets the user set a new password after opening the generated reset link.
-    # The uidb64 part identifies the user securely.
-    # The token part verifies that the reset request is valid.
-    # Full URL example: /accounts/reset/MQ/token-value/
+    # The uidb64 value identifies the user securely.
+    # The token value checks that the reset request is valid.
+    # Full URL example: /accounts/reset/MQ/example-token/
 
     path(
         "reset/done/",
