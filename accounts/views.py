@@ -144,12 +144,11 @@ def demo_password_reset(request):
                 token = default_token_generator.make_token(user)
                 # This creates Django's secure reset token for the user.
 
-                reset_path = reverse(
-                    "password_reset_confirm",
+                reverse_lazy(
+                    "accounts:password_reset_confirm",
                     kwargs={"uidb64": uid, "token": token}
                 )
-                # This builds the path for Django's built-in password reset confirmation page.
-
+                
                 reset_link = request.build_absolute_uri(reset_path)
                 # This creates the full Render URL for the reset link.
 
