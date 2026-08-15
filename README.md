@@ -1254,10 +1254,7 @@ CONTROL + C
 
 # 24. Academic and Financial Disclaimer
 
-This project is for educational purposes only. It demonstrates Django, PostgreSQL, authentication, authorization, Bootstrap, JavaScript, testing and deployment concepts through a realistic portfolio suitability workflow.
-
-It does not provide regulated investment advice, does not recommend financial products and does not execute trades.
-
+This project is for educational purposes only.
 ---
 
 # 25. Summary
