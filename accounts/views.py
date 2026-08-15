@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 # This protects the profile page so only logged-in users can access it.
 
 from django.contrib.auth.forms import PasswordResetForm, UserCreationForm
-# PasswordResetForm is used to validate the email field.
+# PasswordResetForm is used to validate the email field for password reset.
 # UserCreationForm is used as the base form for creating new users.
 
 from django.contrib.auth.tokens import default_token_generator
@@ -20,8 +20,9 @@ from django.contrib.auth.tokens import default_token_generator
 from django.shortcuts import redirect, render
 # render displays templates, and redirect sends the user to another page.
 
-from django.urls import reverse
-# reverse builds a URL from a named URL pattern.
+from django.urls import reverse_lazy
+# reverse_lazy builds a URL from a named URL pattern.
+# It is useful here because the accounts password reset URLs use named routes.
 
 from django.utils.encoding import force_bytes
 # force_bytes converts the user ID into bytes before it is encoded safely for the URL.
@@ -113,6 +114,7 @@ def profile(request):
 def demo_password_reset(request):
     # This view creates a secure password reset link without using Gmail SMTP.
     # It is designed for the deployed academic Render demonstration.
+    # This avoids the Gmail SMTP crash on Render while still using Django's secure reset token system.
 
     reset_link = None
     # This variable will store the generated reset link.
@@ -134,6 +136,7 @@ def demo_password_reset(request):
 
             users = form.get_users(email_submitted)
             # This finds active users with this email address and a usable password.
+            # If the email is not registered, this returns no users.
 
             for user in users:
                 # This loops through matching users.
@@ -144,13 +147,16 @@ def demo_password_reset(request):
                 token = default_token_generator.make_token(user)
                 # This creates Django's secure reset token for the user.
 
-                reverse_lazy(
+                reset_path = reverse_lazy(
                     "accounts:password_reset_confirm",
                     kwargs={"uidb64": uid, "token": token}
                 )
-                
-                reset_link = request.build_absolute_uri(reset_path)
+                # This builds the path for the custom accounts password reset confirmation page.
+                # The accounts namespace is required because accounts/urls.py uses app_name = "accounts".
+
+                reset_link = request.build_absolute_uri(str(reset_path))
                 # This creates the full Render URL for the reset link.
+                # str(reset_path) converts the lazy URL object into normal text.
 
                 break
                 # This stops after the first matching user.
