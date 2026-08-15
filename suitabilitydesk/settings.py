@@ -185,7 +185,7 @@ DEFAULT_FROM_EMAIL = os.environ.get(
     "DEFAULT_FROM_EMAIL",
     "noreply@suitabilitydesk.local"
 )
-EMAIL_TIMEOUT = int(os.environ.get("EMAIL_TIMEOUT", "20"))
+EMAIL_TIMEOUT = int(os.environ.get("EMAIL_TIMEOUT", "10"))
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 # This tells Django to trust Render's HTTPS proxy header.
