@@ -93,4 +93,4 @@ local_settings.py
 
 # Ignores JetBrains IDE settings used by tools such as PyCharm or IntelliJ.
 # These files contain local editor preferences rather than application code.
-.idea/
+.idea/.env
