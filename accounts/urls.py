@@ -9,7 +9,7 @@ from . import views
 
 
 app_name = "accounts"
-# This gives the accounts app a namespace for custom account URLs such as accounts:register and accounts:profile.
+# This gives the accounts app a namespace for custom account URLs such as accounts:register, accounts:profile and accounts:password_reset.
 
 
 urlpatterns = [
@@ -30,7 +30,7 @@ urlpatterns = [
         "reset/<uidb64>/<token>/",
         PasswordResetConfirmView.as_view(
             template_name="registration/password_reset_confirm.html",
-            success_url=reverse_lazy("accounts:password_reset_complete")
+            success_url=reverse_lazy("accounts:password_reset_complete"),
         ),
         name="password_reset_confirm",
     ),
@@ -39,7 +39,7 @@ urlpatterns = [
     path(
         "reset/done/",
         PasswordResetCompleteView.as_view(
-            template_name="registration/password_reset_complete.html"
+            template_name="registration/password_reset_complete.html",
         ),
         name="password_reset_complete",
     ),

@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     # Enables temporary success/error messages, such as “Profile updated successfully”.
     "django.contrib.staticfiles",
     # Allows Django to manage CSS, JavaScript and image files.
-    "anymail",
+  
     "accounts",
     # Custom app for user profiles, roles and profile-update functionality.
     "clients",

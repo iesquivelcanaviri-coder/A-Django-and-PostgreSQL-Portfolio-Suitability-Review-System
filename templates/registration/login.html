@@ -40,7 +40,7 @@
                 <p class="mt-3">
                     {# This creates a paragraph below the form. #}
                     {# mt-3 is a Bootstrap spacing class that adds margin-top. #}
-                    <a href="{% url 'password_reset' %}">Forgot your password?</a>
+                    <a href="{% url 'accounts:password_reset' %}">Forgot your password?</a>
                     {# This creates a link to the password reset page. #}
                     {# {% url 'password_reset' %} asks Django to find the URL pattern named password_reset. #}
                     {# This is better than hardcoding the link because Django can update the URL automatically if routes change. #}
