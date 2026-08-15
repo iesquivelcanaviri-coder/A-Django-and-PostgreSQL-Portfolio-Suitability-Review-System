@@ -1,11 +1,8 @@
 """Top-level URL configuration for SuitabilityDesk."""
-
 from django.contrib import admin
 # This imports Django's built-in admin site.
-
 from django.urls import include, path
 # This imports include and path so the project can connect each app's URLs to the main project URL file.
-
 from dashboard import views as dashboard_views
 # This imports the dashboard views so the public home page can be connected directly here.
 

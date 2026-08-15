@@ -13,7 +13,7 @@
 
 # 1. Project Overview
 
-SuitabilityDesk is an educational Django web application connected to a PostgreSQL database. The project simulates a realistic and lawful portfolio-management support workflow where users can record client information, complete financial and risk profiles, create investment mandates, categorise holdings, manage portfolio review projects, communicate through an internal inbox and preserve an evidence trail.
+SuitabilityDesk is an educational Django web application connected to a PostgreSQL database. The project simulates a realistic and  portfolio-management support workflow where users can record client information, complete financial and risk profiles, create investment mandates, categorise holdings, manage portfolio review projects, communicate through an internal inbox and preserve an evidence trail.
 
 The application is intentionally **not** a trading platform and does **not** provide regulated investment advice. Instead, it focuses on the governance process behind portfolio management:
 
