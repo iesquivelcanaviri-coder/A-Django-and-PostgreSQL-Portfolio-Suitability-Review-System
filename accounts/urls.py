@@ -1,25 +1,22 @@
 from django.urls import path, reverse_lazy
-# This imports Django's path function, which is used to create URL routes for this app.
-# reverse_lazy is used for redirect URLs in class-based authentication views.
+# This imports Django's path function for URL routes and reverse_lazy for redirect URLs used by class-based auth views.
 
 from django.contrib.auth import views as auth_views
-# This imports Django's built-in authentication views.
-# These include the password reset views used to send reset emails and allow users to set a new password.
+# This imports Django's built-in authentication views, including password reset views.
 
 from . import views
-# This imports the custom views.py file from the accounts app.
-# The register and profile views are still custom views from this app.
+# This imports the custom views from accounts/views.py, such as register and profile.
 
 app_name = "accounts"
-# This gives the accounts app its own namespace.
-# The register and profile pages can be linked as accounts:register and accounts:profile.
+# This sets the namespace for the accounts app URLs.
+# Template links can use names such as accounts:register and accounts:profile.
 
 urlpatterns = [
     path("register/", views.register, name="register"),
-    # This route opens the registration page.
+    # This route displays and processes the user registration page.
 
     path("profile/", views.profile, name="profile"),
-    # This route opens the logged-in user's profile page.
+    # This route displays and processes the logged-in user's profile page.
 
     path(
         "password_reset/",
@@ -31,7 +28,7 @@ urlpatterns = [
         ),
         name="password_reset",
     ),
-    # This route displays the password reset form and sends the reset email using the email backend configured in settings.py.
+    # This route shows the password reset form and sends the reset email if the submitted email belongs to an active user.
 
     path(
         "password_reset/done/",
@@ -40,7 +37,7 @@ urlpatterns = [
         ),
         name="password_reset_done",
     ),
-    # This route displays the confirmation page after the reset email has been sent.
+    # This route shows the confirmation page after the password reset request is submitted.
 
     path(
         "reset/<uidb64>/<token>/",
@@ -50,7 +47,7 @@ urlpatterns = [
         ),
         name="password_reset_confirm",
     ),
-    # This route opens the secure reset link where the user can choose a new password.
+    # This route lets the user set a new password using the secure reset token from the email.
 
     path(
         "reset/done/",
@@ -59,5 +56,5 @@ urlpatterns = [
         ),
         name="password_reset_complete",
     ),
-    # This route displays the final confirmation after the password has been changed.
+    # This route shows the final confirmation page after the password has been changed.
 ]
