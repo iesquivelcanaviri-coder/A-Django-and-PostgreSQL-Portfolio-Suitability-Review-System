@@ -1,31 +1,35 @@
-from django.urls import path, reverse_lazy
-# This imports Django's path function for URL routes and reverse_lazy for redirect URLs used by class-based authentication views.
+from django.contrib.auth.views import PasswordResetCompleteView, PasswordResetConfirmView
+# These are Django's built-in views for setting a new password after a valid reset link is opened.
 
-from django.contrib.auth.views import PasswordResetConfirmView, PasswordResetCompleteView
-# These are Django's built-in views for setting a new password and showing the reset complete page.
+from django.urls import path, reverse_lazy
+# path creates URL patterns, and reverse_lazy is used for redirect URLs in class-based views.
 
 from . import views
-# This imports the custom views from accounts/views.py, including register, profile, and the demo password reset views.
+# This imports the custom view functions from accounts/views.py.
+
 
 app_name = "accounts"
-# This gives the accounts app a namespace, so URLs can be called as accounts:register, accounts:profile, accounts:password_reset, etc.
+# This gives the accounts app its own namespace, such as accounts:register and accounts:profile.
+
 
 urlpatterns = [
-    # This list contains all URL routes that belong to the accounts app.
+    # This list stores all URL routes that belong to the accounts app.
 
     path("register/", views.register, name="register"),
-    # This route opens the user registration page at /accounts/register/.
+    # This route opens the registration page at /accounts/register/.
+    # It requires a register function inside accounts/views.py.
 
     path("profile/", views.profile, name="profile"),
     # This route opens the logged-in user's profile page at /accounts/profile/.
+    # It requires a profile function inside accounts/views.py.
 
     path("password_reset/", views.demo_password_reset, name="password_reset"),
-    # This route opens the password reset form.
-    # It uses the custom demo_password_reset view instead of Gmail SMTP, so the Render version works reliably.
+    # This route opens the password reset request page.
+    # It uses the custom demo_password_reset view so the Render version does not depend on Gmail SMTP.
 
     path("password_reset/done/", views.demo_password_reset_done, name="password_reset_done"),
     # This route opens the password reset result page.
-    # For the academic Render demo, this page displays the secure reset link directly.
+    # For the academic Render demo, this page displays the generated secure reset link directly.
 
     path(
         "reset/<uidb64>/<token>/",
@@ -35,7 +39,7 @@ urlpatterns = [
         ),
         name="password_reset_confirm",
     ),
-    # This route lets the user set a new password after opening the secure reset link.
+    # This route opens the form where the user enters a new password after clicking the reset link.
 
     path(
         "reset/done/",
