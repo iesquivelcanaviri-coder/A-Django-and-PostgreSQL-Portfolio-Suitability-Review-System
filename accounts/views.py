@@ -17,7 +17,6 @@ from django.utils.http import urlsafe_base64_encode
 # urlsafe_base64_encode creates the encoded user ID used inside the reset URL.
 
 
-
 def demo_password_reset(request):
     # This view creates a secure password reset link without using Gmail SMTP.
     # It is used for the Render academic deployment so the password reset workflow works reliably.
